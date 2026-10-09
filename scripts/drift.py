@@ -468,115 +468,140 @@ def write_report(
 # scan command
 # ---------------------------------------------------------------------------
 def run_scan(args: argparse.Namespace, cfg: dict) -> int:
-    repo = Path(args.repo).expanduser().resolve()
-
-    no_llm = bool(args.no_llm or cfg.get("no_llm", False))
-    no_images = bool(args.no_images or cfg.get("no_images", False)) or no_llm  # --no-llm also skips images
-    model_override = cfg.get("model")
-    output = Path(cfg.get("output", "drift-report.json"))
-
-    if not repo.is_dir():
-        print(f"error: not a directory: {repo}", file=sys.stderr)
-        return 2
-
-    # 1. detect -------------------------------------------------------------
-    if not is_web_project(repo):
-        print(not_web_error(repo))
-        return 2
-    proj_kind = detect(repo)
-    print(f"Project type: {proj_kind}")
-
-    # 2. extract ------------------------------------------------------------
-    facts = collect_facts(repo)
-    print(f"Facts: {len(facts)}")
-
-    doc_files = collect_doc_files(repo)
-    claims = collect_text_claims(repo)
-    print(f"Docs scanned: {len(doc_files)}  text claims: {len(claims)}")
-
-    if not no_images:
-        image_claims = collect_image_claims(repo, doc_files)
-        if image_claims:
-            claims.extend(image_claims)
-            print(f"image claims: {len(image_claims)}")
-        elif extract_images is None:
-            print("image claims: skipped (drift/extract_images.py not available yet)")
+    repo_arg = args.repo
+    is_url = repo_arg.startswith(("http://", "https://", "git@"))
+    
+    temp_dir_obj = None
+    if is_url:
+        import tempfile
+        import subprocess
+        temp_dir_obj = tempfile.TemporaryDirectory(prefix="drift_")
+        repo_name = repo_arg.rstrip("/").split("/")[-1]
+        if repo_name.endswith(".git"):
+            repo_name = repo_name[:-4]
+        clone_dir = Path(temp_dir_obj.name) / repo_name
+        print(f"Cloning {repo_arg} into temporary directory...")
+        res = subprocess.run(["git", "clone", "--depth", "1", repo_arg, str(clone_dir)], capture_output=True, text=True)
+        if res.returncode != 0:
+            print(f"error: failed to clone {repo_arg}:\n{res.stderr}", file=sys.stderr)
+            temp_dir_obj.cleanup()
+            return 2
+        repo = clone_dir.resolve()
     else:
-        print("image claims: skipped (--no-images)" if not no_llm else "image claims: skipped (--no-llm)")
+        repo = Path(repo_arg).expanduser().resolve()
 
-    # 3. match --------------------------------------------------------------
-    if team_match is not None:
-        findings = team_match(claims, facts)
-        matcher_name = "drift.match"
-    else:
-        findings = fallback_match(facts, claims)
-        matcher_name = "built-in fallback (drift/match.py not available yet)"
-    stale = sum(1 for f in findings if f.status == "STALE")
-    suspect = sum(1 for f in findings if f.status == "SUSPECT")
-    print(f"Findings: {len(findings)} (STALE {stale}, SUSPECT {suspect})  matcher: {matcher_name}")
+    try:
+        no_llm = bool(args.no_llm or cfg.get("no_llm", False))
+        no_images = bool(args.no_images or cfg.get("no_images", False)) or no_llm  # --no-llm also skips images
+        model_override = cfg.get("model")
+        output = Path(cfg.get("output", "drift-report.json")).resolve()
 
-    # 4. judge --------------------------------------------------------------
-    if not no_llm and judge is not None:
-        try:
-            reset_stats()
-        except Exception:
-            pass
-        findings = judge(findings)
+        if not repo.is_dir():
+            print(f"error: not a directory: {repo}", file=sys.stderr)
+            return 2
+
+        # 1. detect -------------------------------------------------------------
+        if not is_web_project(repo):
+            print(not_web_error(repo))
+            return 2
+        proj_kind = detect(repo)
+        print(f"Project type: {proj_kind}")
+    
+        # 2. extract ------------------------------------------------------------
+        facts = collect_facts(repo)
+        print(f"Facts: {len(facts)}")
+    
+        doc_files = collect_doc_files(repo)
+        claims = collect_text_claims(repo)
+        print(f"Docs scanned: {len(doc_files)}  text claims: {len(claims)}")
+    
+        if not no_images:
+            image_claims = collect_image_claims(repo, doc_files)
+            if image_claims:
+                claims.extend(image_claims)
+                print(f"image claims: {len(image_claims)}")
+            elif extract_images is None:
+                print("image claims: skipped (drift/extract_images.py not available yet)")
+        else:
+            print("image claims: skipped (--no-images)" if not no_llm else "image claims: skipped (--no-llm)")
+    
+        # 3. match --------------------------------------------------------------
+        if team_match is not None:
+            findings = team_match(claims, facts)
+            matcher_name = "drift.match"
+        else:
+            findings = fallback_match(facts, claims)
+            matcher_name = "built-in fallback (drift/match.py not available yet)"
         stale = sum(1 for f in findings if f.status == "STALE")
         suspect = sum(1 for f in findings if f.status == "SUSPECT")
-        print(f"After judge: STALE {stale}, SUSPECT {suspect}  stats: {JUDGE_STATS}")
-    elif not no_llm:
-        print("judge: skipped (drift/judge.py not available yet)")
-    else:
-        print("judge: skipped (--no-llm)")
+        print(f"Findings: {len(findings)} (STALE {stale}, SUSPECT {suspect})  matcher: {matcher_name}")
 
-    # 5. patch --------------------------------------------------------------
-    if make_patches is not None:
-        findings = make_patches(findings, repo=repo)
-        patch_count = sum(1 for f in findings if f.patch)
-        print(f"Patches generated: {patch_count}")
+        # 4. judge --------------------------------------------------------------
+        if not no_llm and judge is not None:
+            try:
+                reset_stats()
+            except Exception:
+                pass
+            findings = judge(findings)
+            stale = sum(1 for f in findings if f.status == "STALE")
+            suspect = sum(1 for f in findings if f.status == "SUSPECT")
+            print(f"After judge: STALE {stale}, SUSPECT {suspect}  stats: {JUDGE_STATS}")
+        elif not no_llm:
+            print("judge: skipped (drift/judge.py not available yet)")
+        else:
+            print("judge: skipped (--no-llm)")
 
-    # 6. report -------------------------------------------------------------
-    model_info = _model_info(no_llm, model_override)
-    write_report(repo, proj_kind, facts, claims, findings, model_info, output)
-    print(f"Report written: {output} (+ {output.with_suffix('.md').name})")
+        # 5. patch --------------------------------------------------------------
+        if make_patches is not None:
+            findings = make_patches(findings, repo=repo)
+            patch_count = sum(1 for f in findings if f.patch)
+            print(f"Patches generated: {patch_count}")
 
-    if make_patches is not None and combined_patch is not None:
-        diff = combined_patch(findings, repo=repo)
-        if diff:
-            diff_path = output.with_suffix(".patch")
-            diff_path.write_text(diff, encoding="utf-8")
-            print(f"Unified diff written: {diff_path}")
+        # 6. report -------------------------------------------------------------
+        model_info = _model_info(no_llm, model_override)
+        write_report(repo, proj_kind, facts, claims, findings, model_info, output)
+        print(f"Report written: {output} (+ {output.with_suffix('.md').name})")
 
-    # 7. summary ------------------------------------------------------------
-    md_path = output.with_suffix(".md")
-    if md_path.exists():
-        print("\n" + "=" * 90)
-        print(md_path.read_text(encoding="utf-8").strip())
-        print("=" * 90)
-    else:
-        print("\n" + "=" * 90)
-        print(f"{'STATUS':<9} {'DOC':<24} {'LINE':<6} {'CLAIM'}")
-        print("-" * 90)
-        for f in findings:
-            if f.status == "OK":
-                continue
-            doc = Path(f.claim.doc_file).name
-            claim_txt = f.claim.text if len(f.claim.text) <= 55 else f.claim.text[:52] + "..."
-            print(f"{f.status:<9} {doc:<24} {f.claim.line:<6} {claim_txt}")
-            print(f"          -> {f.reason}")
-        print("=" * 90)
+        if make_patches is not None and combined_patch is not None:
+            diff = combined_patch(findings, repo=repo)
+            if diff:
+                diff_path = output.with_suffix(".patch")
+                diff_path.write_text(diff, encoding="utf-8")
+                print(f"Unified diff written: {diff_path}")
 
-    # Determine exit code based on actual broken problems reported
-    real_broken = stale
-    if output.exists():
-        try:
-            report_data = json.loads(output.read_text(encoding="utf-8"))
-            real_broken = report_data.get("summary", {}).get("broken_count", stale)
-        except Exception:
-            pass
+        # 7. summary ------------------------------------------------------------
+        md_path = output.with_suffix(".md")
+        if md_path.exists():
+            print("\n" + "=" * 90)
+            print(md_path.read_text(encoding="utf-8").strip())
+            print("=" * 90)
+        else:
+            print("\n" + "=" * 90)
+            print(f"{'STATUS':<9} {'DOC':<24} {'LINE':<6} {'CLAIM'}")
+            print("-" * 90)
+            for f in findings:
+                if f.status == "OK":
+                    continue
+                doc = Path(f.claim.doc_file).name
+                claim_txt = f.claim.text if len(f.claim.text) <= 55 else f.claim.text[:52] + "..."
+                print(f"{f.status:<9} {doc:<24} {f.claim.line:<6} {claim_txt}")
+                print(f"          -> {f.reason}")
+            print("=" * 90)
 
-    return 1 if real_broken > 0 else 0
+        # Determine exit code based on actual broken problems reported
+        real_broken = stale
+        if output.exists():
+            try:
+                report_data = json.loads(output.read_text(encoding="utf-8"))
+                real_broken = report_data.get("summary", {}).get("broken_count", stale)
+            except Exception:
+                pass
+
+        return 1 if real_broken > 0 else 0
+
+    finally:
+        if temp_dir_obj is not None:
+            temp_dir_obj.cleanup()
 
 
 def main(argv: list[str] | None = None) -> int:
