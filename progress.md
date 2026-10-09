@@ -89,8 +89,8 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 | 2.2 | `extract_routes.py`: Express routes and same-file prefixes | A | ⬜ | |
 | 2.3 | `extract_ports.py` | A | ⬜ | |
 | 2.4 | `match.py`: per-kind rules, dynamic-route normalisation, allow-list, image-confidence discount + tests | B | ⬜ | |
-| 2.5 | `judge.py`: batched verdicts, schema check, threshold | C | ⬜ | |
-| 2.6 | `patch.py`: unified diff, deterministic suggestions, `git apply --check` | C | ⬜ | |
+| 2.5 | `judge.py`: batched verdicts, schema check, threshold | C | ✅ | Implemented: batched (<=5) SUSPECT judge with citation & threshold validation |
+| 2.6 | `patch.py`: unified diff, deterministic suggestions, `git apply --check` | C | ✅ | Implemented: unified diff generation with git apply --check verification & combined_patch |
 | 2.7 | End-to-end text run on one fixture (`--no-llm` and Gemma 4) | A, B, C | ⬜ | **P0 frozen after this** |
 
 ## Stage 3 — Integration, image claims, packaging (4:00–5:00)
