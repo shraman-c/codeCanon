@@ -461,9 +461,8 @@ class CodeCanonGUI(tk.Tk):
 
     def start_single_scan(self):
         repo = self.target_dir.get().strip()
-        is_url = repo.startswith(("http://", "https://", "git@"))
-        if not repo or (not is_url and not os.path.isdir(repo)):
-            messagebox.showerror("Error", "Please select a valid repository directory or enter a GitHub URL.")
+        if not repo or not os.path.isdir(repo):
+            messagebox.showerror("Error", "Please select a valid repository directory.")
             return
 
         self.set_running_state(True)
