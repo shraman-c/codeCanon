@@ -878,7 +878,7 @@
     }
   ],
   "model": {
-    "id": "gemma-4-31b-it (disabled: --no-llm)",
+    "id": "gemma-4-31b-it",
     "mode": "api",
     "config": {
       "threshold": 0.6

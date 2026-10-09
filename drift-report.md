@@ -2,7 +2,7 @@
 
 Project type: `next_app`  
 Findings: **17** (STALE 5, SUSPECT 2, OK 10)
-Model: `gemma-4-31b-it (disabled: --no-llm)` (api)
+Model: `gemma-4-31b-it` (api)
 
 | Status | Doc | Line | Claim | Reason |
 |---|---|---|---|---|
