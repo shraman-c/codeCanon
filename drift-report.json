@@ -1,0 +1,887 @@
+{
+  "metadata": {
+    "repo_path": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app",
+    "kind": "next_app",
+    "mode": "scan",
+    "diff": null,
+    "ignored_paths": [
+      ".drift_cache",
+      ".git",
+      ".next",
+      "build",
+      "coverage",
+      "dist",
+      "node_modules"
+    ],
+    "stats": {
+      "facts": 21,
+      "claims": 17,
+      "findings": 17,
+      "stale": 5,
+      "suspect": 2,
+      "ok": 10
+    }
+  },
+  "facts": [
+    {
+      "kind": "npm_script",
+      "name": "dev",
+      "detail": "next dev -p 3000",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "npm_script",
+      "name": "build",
+      "detail": "next build",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "npm_script",
+      "name": "start",
+      "detail": "next start",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "npm_script",
+      "name": "test",
+      "detail": "jest",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "npm_script",
+      "name": "lint",
+      "detail": "next lint",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "dependency",
+      "name": "next",
+      "detail": "^15.0.0",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "dependency",
+      "name": "react",
+      "detail": "^19.0.0",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "dependency",
+      "name": "react-dom",
+      "detail": "^19.0.0",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "dependency",
+      "name": "@prisma/client",
+      "detail": "^6.0.0",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "dependency",
+      "name": "prisma",
+      "detail": "^6.0.0",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "dependency",
+      "name": "typescript",
+      "detail": "^5.0.0",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "dependency",
+      "name": "jest",
+      "detail": "^29.0.0",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "engine",
+      "name": "node",
+      "detail": ">=20",
+      "file": "package.json",
+      "line": 0
+    },
+    {
+      "kind": "engine",
+      "name": "node",
+      "detail": "20.11.0",
+      "file": ".nvmrc",
+      "line": 0
+    },
+    {
+      "kind": "env_var",
+      "name": "DATABASE_URL",
+      "detail": "example value in .env.example: postgresql://demo",
+      "file": ".env.example",
+      "line": 0
+    },
+    {
+      "kind": "env_var",
+      "name": "NEXT_PUBLIC_API_URL",
+      "detail": "client-exposed (Next.js)",
+      "file": "lib\\db.ts",
+      "line": 1
+    },
+    {
+      "kind": "env_var",
+      "name": "CACHE_HOST",
+      "detail": "server-side",
+      "file": "lib\\db.ts",
+      "line": 1
+    },
+    {
+      "kind": "route",
+      "name": "/api/health",
+      "detail": "GET",
+      "file": "app/api/health/route.ts",
+      "line": 0
+    },
+    {
+      "kind": "route",
+      "name": "/api/users/:id",
+      "detail": "GET",
+      "file": "app/api/users/[id]/route.ts",
+      "line": 0
+    },
+    {
+      "kind": "route",
+      "name": "/api/users",
+      "detail": "GET,POST",
+      "file": "app/api/users/route.ts",
+      "line": 0
+    },
+    {
+      "kind": "port",
+      "name": "dev",
+      "detail": "script dev listens on :3000",
+      "file": "package.json",
+      "line": 0
+    }
+  ],
+  "claims": [
+    {
+      "kind": "npm_script",
+      "text": "npm run seed",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+      "line": 3,
+      "context": "# API Reference  - `npm run seed` fills the database with demo data.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "npm_script",
+      "text": "pnpm build",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+      "line": 4,
+      "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "GET /api/orders`",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+      "line": 5,
+      "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build. - `GET /api/orders` lists orders.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "npm_script",
+      "text": "npm install",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 7,
+      "context": "# Next Demo App  A small Next.js (App Router) demo with a Prisma-backed API.  ## Setup  1. `npm install`",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "engine",
+      "text": "node 20.11.0",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 9,
+      "context": "# Next Demo App  A small Next.js (App Router) demo with a Prisma-backed API.  ## Setup  1. `npm install` 2. Copy `.env.example` to `.env` and fill the values. 3. Requires `node 20.11.0` or newer.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "npm_script",
+      "text": "npm run serve",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 16,
+      "context": "1. `npm install` 2. Copy `.env.example` to `.env` and fill the values. 3. Requires `node 20.11.0` or newer.  ## Development  Run the dev server:  npm run serve",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "port",
+      "text": "localhost:3000",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 19,
+      "context": "2. Copy `.env.example` to `.env` and fill the values. 3. Requires `node 20.11.0` or newer.  ## Development  Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "GET /api/users`",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 23,
+      "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users`",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "POST /api/users`",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 24,
+      "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users`",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "GET /api/v2/users`",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 25,
+      "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "fetch('/api/users/:id')",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 26,
+      "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "/api/users/:id",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 26,
+      "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "env_var",
+      "text": "STRIPE_SECRET_KEY=sk_live_secret",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 30,
+      "context": "## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "env_var",
+      "text": "DATABASE_URL=postgresql://demo",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 31,
+      "context": "- List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "env_var",
+      "text": "NEXT_PUBLIC_API_URL=https://api.example.com",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 32,
+      "context": "- List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env. Public base URL: NEXT_PUBLIC_API_URL=https://api.example.com",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "port",
+      "text": "port 4000",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 33,
+      "context": "- Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env. Public base URL: NEXT_PUBLIC_API_URL=https://api.example.com The API listens on `port 4000`.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "engine",
+      "text": "node 16.20.0",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 35,
+      "context": "- Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env. Public base URL: NEXT_PUBLIC_API_URL=https://api.example.com The API listens on `port 4000`.  This project requires node 16.20.0 for the legacy worker.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    }
+  ],
+  "findings": [
+    {
+      "claim": {
+        "kind": "npm_script",
+        "text": "npm run seed",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+        "line": 3,
+        "context": "# API Reference  - `npm run seed` fills the database with demo data.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "STALE",
+      "reason": "no script named `seed` in package.json",
+      "evidence": [
+        {
+          "kind": "npm_script",
+          "name": "dev",
+          "detail": "next dev -p 3000",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "build",
+          "detail": "next build",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "start",
+          "detail": "next start",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "test",
+          "detail": "jest",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "lint",
+          "detail": "next lint",
+          "file": "package.json",
+          "line": 0
+        }
+      ],
+      "confidence": 0.9,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "npm_script",
+        "text": "pnpm build",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+        "line": 4,
+        "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "script `build` exists in package.json",
+      "evidence": [
+        {
+          "kind": "npm_script",
+          "name": "build",
+          "detail": "next build",
+          "file": "package.json",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "GET /api/orders`",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+        "line": 5,
+        "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build. - `GET /api/orders` lists orders.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "STALE",
+      "reason": "route /api/orders not found in code",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/health",
+          "detail": "GET",
+          "file": "app/api/health/route.ts",
+          "line": 0
+        },
+        {
+          "kind": "route",
+          "name": "/api/users/:id",
+          "detail": "GET",
+          "file": "app/api/users/[id]/route.ts",
+          "line": 0
+        },
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 0.9,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "npm_script",
+        "text": "npm install",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 7,
+        "context": "# Next Demo App  A small Next.js (App Router) demo with a Prisma-backed API.  ## Setup  1. `npm install`",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "built-in npm script",
+      "evidence": [],
+      "confidence": 0.9,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "engine",
+        "text": "node 20.11.0",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 9,
+        "context": "# Next Demo App  A small Next.js (App Router) demo with a Prisma-backed API.  ## Setup  1. `npm install` 2. Copy `.env.example` to `.env` and fill the values. 3. Requires `node 20.11.0` or newer.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "node 20.11.0 satisfies engines (>=20)",
+      "evidence": [
+        {
+          "kind": "engine",
+          "name": "node",
+          "detail": ">=20",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "engine",
+          "name": "node",
+          "detail": "20.11.0",
+          "file": ".nvmrc",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "npm_script",
+        "text": "npm run serve",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 16,
+        "context": "1. `npm install` 2. Copy `.env.example` to `.env` and fill the values. 3. Requires `node 20.11.0` or newer.  ## Development  Run the dev server:  npm run serve",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "STALE",
+      "reason": "no script named `serve` in package.json",
+      "evidence": [
+        {
+          "kind": "npm_script",
+          "name": "dev",
+          "detail": "next dev -p 3000",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "build",
+          "detail": "next build",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "start",
+          "detail": "next start",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "test",
+          "detail": "jest",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "npm_script",
+          "name": "lint",
+          "detail": "next lint",
+          "file": "package.json",
+          "line": 0
+        }
+      ],
+      "confidence": 0.9,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "port",
+        "text": "localhost:3000",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 19,
+        "context": "2. Copy `.env.example` to `.env` and fill the values. 3. Requires `node 20.11.0` or newer.  ## Development  Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "port 3000 found in code",
+      "evidence": [
+        {
+          "kind": "port",
+          "name": "dev",
+          "detail": "script dev listens on :3000",
+          "file": "package.json",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "GET /api/users`",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 23,
+        "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users`",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "GET /api/users exists in code",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "POST /api/users`",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 24,
+        "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users`",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "POST /api/users exists in code",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "GET /api/v2/users`",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 25,
+        "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "SUSPECT",
+      "reason": "similar route exists: /api/users",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 0.6,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "fetch('/api/users/:id')",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 26,
+        "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "route /api/users/:id exists in code",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users/:id",
+          "detail": "GET",
+          "file": "app/api/users/[id]/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "/api/users/:id",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 26,
+        "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "route /api/users/:id exists in code",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users/:id",
+          "detail": "GET",
+          "file": "app/api/users/[id]/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "env_var",
+        "text": "STRIPE_SECRET_KEY=sk_live_secret",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 30,
+        "context": "## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "STALE",
+      "reason": "env var STRIPE_SECRET_KEY not found in code",
+      "evidence": [
+        {
+          "kind": "env_var",
+          "name": "DATABASE_URL",
+          "detail": "example value in .env.example: postgresql://demo",
+          "file": ".env.example",
+          "line": 0
+        },
+        {
+          "kind": "env_var",
+          "name": "NEXT_PUBLIC_API_URL",
+          "detail": "client-exposed (Next.js)",
+          "file": "lib\\db.ts",
+          "line": 1
+        },
+        {
+          "kind": "env_var",
+          "name": "CACHE_HOST",
+          "detail": "server-side",
+          "file": "lib\\db.ts",
+          "line": 1
+        }
+      ],
+      "confidence": 0.9,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "env_var",
+        "text": "DATABASE_URL=postgresql://demo",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 31,
+        "context": "- List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "env var DATABASE_URL present in code",
+      "evidence": [
+        {
+          "kind": "env_var",
+          "name": "DATABASE_URL",
+          "detail": "example value in .env.example: postgresql://demo",
+          "file": ".env.example",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "env_var",
+        "text": "NEXT_PUBLIC_API_URL=https://api.example.com",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 32,
+        "context": "- List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env. Public base URL: NEXT_PUBLIC_API_URL=https://api.example.com",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "env var NEXT_PUBLIC_API_URL present in code",
+      "evidence": [
+        {
+          "kind": "env_var",
+          "name": "NEXT_PUBLIC_API_URL",
+          "detail": "client-exposed (Next.js)",
+          "file": "lib\\db.ts",
+          "line": 1
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "port",
+        "text": "port 4000",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 33,
+        "context": "- Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list. - Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env. Public base URL: NEXT_PUBLIC_API_URL=https://api.example.com The API listens on `port 4000`.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "STALE",
+      "reason": "port 4000 not found in code",
+      "evidence": [
+        {
+          "kind": "port",
+          "name": "dev",
+          "detail": "script dev listens on :3000",
+          "file": "package.json",
+          "line": 0
+        }
+      ],
+      "confidence": 0.9,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "engine",
+        "text": "node 16.20.0",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 35,
+        "context": "- Fetch one user with `fetch('/api/users/:id')`.  ## Configuration  Set STRIPE_SECRET_KEY=sk_live_secret in your `.env` file. Copy DATABASE_URL=postgresql://demo into your env. Public base URL: NEXT_PUBLIC_API_URL=https://api.example.com The API listens on `port 4000`.  This project requires node 16.20.0 for the legacy worker.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "SUSPECT",
+      "reason": "repo requires >=20, docs say 16.20.0",
+      "evidence": [
+        {
+          "kind": "engine",
+          "name": "node",
+          "detail": ">=20",
+          "file": "package.json",
+          "line": 0
+        },
+        {
+          "kind": "engine",
+          "name": "node",
+          "detail": "20.11.0",
+          "file": ".nvmrc",
+          "line": 0
+        }
+      ],
+      "confidence": 0.6,
+      "patch": null,
+      "source": "deterministic"
+    }
+  ],
+  "model": {
+    "id": "gemma-4-31b-it (disabled: --no-llm)",
+    "mode": "api",
+    "config": {
+      "threshold": 0.6
+    }
+  }
+}
