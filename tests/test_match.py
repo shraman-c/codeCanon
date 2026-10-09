@@ -204,39 +204,39 @@ class TestEngineMatching:
 class TestRouteMatching:
     def test_exact_match(self):
         claim = _claim("route", "GET /api/users")
-        fact = _fact("route", "GET /api/users", "GET /api/users")
+        fact = _fact("route", "/api/users", "GET,POST")
         findings = match_claims([claim], [fact])
         assert findings[0].status == "OK"
 
     def test_param_normalization(self):
         claim = _claim("route", "GET /api/users/123")
-        fact = _fact("route", "GET /api/users/:id", "GET /api/users/:id")
+        fact = _fact("route", "/api/users/:id", "GET")
         findings = match_claims([claim], [fact])
         assert findings[0].status == "OK"
 
     def test_next_param_style(self):
         claim = _claim("route", "GET /api/users/[id]")
-        fact = _fact("route", "GET /api/users/:id", "GET /api/users/:id")
+        fact = _fact("route", "/api/users/:id", "GET")
         findings = match_claims([claim], [fact])
         assert findings[0].status == "OK"
 
     def test_method_mismatch_suspect(self):
         claim = _claim("route", "POST /api/users")
-        fact = _fact("route", "GET /api/users", "GET /api/users")
+        fact = _fact("route", "/api/users", "GET")
         findings = match_claims([claim], [fact])
         assert findings[0].status == "SUSPECT"
         assert "method differs" in findings[0].reason
 
     def test_similar_prefix_suspect(self):
         claim = _claim("route", "GET /api/users")
-        fact = _fact("route", "GET /api/v2/users", "GET /api/v2/users")
+        fact = _fact("route", "/api/v2/users", "GET")
         findings = match_claims([claim], [fact])
         assert findings[0].status == "SUSPECT"
         assert "similar" in findings[0].reason
 
     def test_not_found_stale(self):
         claim = _claim("route", "GET /api/missing")
-        fact = _fact("route", "GET /api/users", "GET /api/users")
+        fact = _fact("route", "/api/users", "GET")
         findings = match_claims([claim], [fact])
         assert findings[0].status == "STALE"
 

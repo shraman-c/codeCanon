@@ -55,10 +55,7 @@ def scan_file(filepath: Path) -> Iterator[Claim]:
 
             ctx.add_line(line)
 
-            if ctx.in_fenced_block:
-                source = "code"
-            else:
-                source = "text"
+            source = "text"
 
             for claim in extract_claims_from_line(line, line_num, filepath, source, ctx.get_context()):
                 yield claim
@@ -154,10 +151,10 @@ def extract_route_claims_from_line(
     context: str,
 ) -> Iterator[Claim]:
     route_patterns = [
-        (r"\b(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+(/[^\s\"'>)]+)", "method_path"),
-        (r"curl\s+(?:-[XLM]\s+)?['\"]?(?:([A-Z]+)\s+)?([^\s\"'>)]+)", "curl"),
+        (r"\b(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+(/[^\s\"'>`)]+)", "method_path"),
+        (r"curl\s+(?:-[XLM]\s+)?['\"]?(?:([A-Z]+)\s+)?([^\s\"'>`)]+)", "curl"),
         (r"fetch\(['\"]([^'\"]+)['\"]", "fetch"),
-        (r"[`'\"](/api/[^`'\"]+)[`'\"]", "api_path"),
+        (r"[`'\"]?(/api/[^`'\"]+)[`'\"]?", "api_path"),
     ]
 
     for pattern, claim_type in route_patterns:

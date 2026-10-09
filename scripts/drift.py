@@ -38,7 +38,7 @@ from drift.models import Claim, Fact, Finding
 
 # --- Teammate modules (B/C) are optional until they land -------------------
 try:
-    from drift.match import match as team_match  # type: ignore
+    from drift.match import match_claims as team_match  # type: ignore
 except ImportError:
     team_match = None
 
@@ -500,7 +500,7 @@ def run_scan(args: argparse.Namespace, cfg: dict) -> int:
 
     # 3. match --------------------------------------------------------------
     if team_match is not None:
-        findings = team_match(facts, claims)
+        findings = team_match(claims, facts)
         matcher_name = "drift.match"
     else:
         findings = fallback_match(facts, claims)
