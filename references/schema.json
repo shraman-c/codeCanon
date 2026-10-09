@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "drift-report.json",
+  "description": "Output schema for docs-drift-detector (Web Dev Edition, Gemma 4).",
+  "type": "object",
+  "required": ["metadata", "facts", "claims", "findings", "model"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["repo_path", "kind", "mode"],
+      "properties": {
+        "repo_path": { "type": "string" },
+        "kind": { "type": "string", "enum": ["next_app", "express_api", "vite_react", "other"] },
+        "mode": { "type": "string", "enum": ["scan", "diff"] },
+        "diff": { "type": ["string", "null"] },
+        "ignored_paths": { "type": "array", "items": { "type": "string" } },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "files_read": { "type": "integer" },
+            "images_read": { "type": "integer" }
+          }
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["id", "mode"],
+      "properties": {
+        "id": { "type": "string" },
+        "mode": { "type": "string", "enum": ["api", "local"] },
+        "config": {
+          "type": "object",
+          "properties": {
+            "fold_system_prompt": { "type": "boolean" },
+            "threshold": { "type": "number" },
+            "image_count_cap": { "type": "integer" },
+            "image_size_cap_bytes": { "type": "integer" }
+          }
+        }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/fact" }
+    },
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/claim" }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/finding" }
+    }
+  },
+  "definitions": {
+    "fact": {
+      "type": "object",
+      "required": ["kind", "name", "detail", "file", "line"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "npm_script",
+            "env_var",
+            "route",
+            "port",
+            "engine",
+            "dependency",
+            "component_prop"
+          ]
+        },
+        "name": { "type": "string" },
+        "detail": { "type": "string" },
+        "file": { "type": "string" },
+        "line": { "type": "integer" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": ["kind", "text", "doc_file", "line", "context", "source"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "npm_script",
+            "env_var",
+            "route",
+            "port",
+            "engine",
+            "dependency",
+            "component_prop",
+            "code_sample"
+          ]
+        },
+        "text": { "type": "string" },
+        "doc_file": { "type": "string" },
+        "line": { "type": "integer" },
+        "context": { "type": "string" },
+        "source": { "type": "string", "enum": ["text", "image"] },
+        "image_path": { "type": ["string", "null"] },
+        "extracted_text": { "type": ["string", "null"] }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["claim", "status", "reason", "evidence", "confidence", "source"],
+      "properties": {
+        "claim": { "$ref": "#/definitions/claim" },
+        "status": { "type": "string", "enum": ["OK", "STALE", "SUSPECT"] },
+        "reason": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/fact" }
+        },
+        "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "patch": { "type": ["string", "null"] },
+        "source": { "type": "string", "enum": ["deterministic", "llm"] }
+      }
+    }
+  }
+}
