@@ -103,8 +103,8 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 | 3.9 | `benchmark/run_bench.py --model <id>`: expected.json scoring, text/image recall, decoys flagged, calls saved, patch validity, runtime, grep baseline → `benchmark/results/<model>.json` | A | ✅ | Verified: next_app --no-llm → text recall 100% (7/7), decoys 0/10, grep baseline 85.7% w/ 5 decoys flagged, 0.15s |
 | 3.4 | `extract_images.py`: find local images, caps, hash cache, claims into matcher | B | ✅ | Finds `![alt](path)` + `<img src>`; filters local .png/.jpg/.jpeg/.webp ≤1.5MB, max 10; SHA256 cache; delegates to `vision.extract_claims()`; yields `Claim(source="image", image_path, extracted_text)` |
 | 3.5 | `report.py`: JSON + Markdown, image findings, model line, exit codes | B | ✅ | `write_report()` per `references/schema.json`; outputs `drift-report.json` + `.md`; includes `files_read`, `images_read`; image findings show `image_path` + `extracted_text`; exit 1 if any STALE |
-| 3.6 | `vision.py`: prompt, JSON validation, empty/low-quality handling | C | ⬜ | P1 key |
-| 3.7 | `SKILL.md` finalised, validated, invoked by a real agent on a web repo | C | ⬜ | |
+| 3.6 | `vision.py`: prompt, JSON validation, empty/low-quality handling | C | ✅ | Implemented `extract_claims()` with multimodal prompt (`prompts.md` section C), base64 encoding, JSON schema validation, empty return for other/low-quality, graceful `LLMError` degradation; 5/5 unit tests in `test_vision.py` |
+| 3.7 | `SKILL.md` finalised, validated, invoked by a real agent on a web repo | C | ✅ | Finalized `SKILL.md` and `docs-drift-detector/SKILL.md` matching folder name, valid frontmatter, Gemma 4 models (31b/e4b), `DRIFT_*` setup, relative script paths; verified CLI report generation |
 | 3.8 | Cross-review: each PR reviewed by a different member | A, B, C | ⬜ | |
 
 ## Stage 4 — Parallel testing and benchmark (5:00–6:15)

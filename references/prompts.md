@@ -52,24 +52,37 @@ Apply these framework conventions when judging route, script, and env drift:
 
 ---
 
-## C. Vision Prompt Placeholder (TODO v1)
+## C. Vision Prompt (v1)
 
-<!-- TODO v1: Stage 3 Implementation -->
-Extract text and interface claims from terminal output, UI screenshots, or config images.
+Analyze this screenshot / image from a web development repository (e.g. terminal output, .env file, Swagger/API doc, browser UI).
+Identify any documented facts or configuration claims visible in the image:
+- `npm_script`: commands or scripts executed (e.g. `npm run dev:local`, `pnpm start`)
+- `env_var`: environment variables or config keys (e.g. `PORT=3000`, `DATABASE_URL=...`)
+- `route`: HTTP API routes or paths (e.g. `GET /api/users`, `http://localhost:3000/api`)
+- `port`: server listening ports (e.g. `3000`, `8080`)
+- `engine`: Node/runtime versions (e.g. `v20.11.0`)
 
-Target Schema:
+Output ONLY valid JSON matching this schema:
 ```json
 {
   "image_type": "terminal",
   "claims": [
     {
-      "kind": "ports",
+      "kind": "port",
       "text": "ready on http://localhost:3000",
       "quote": "http://localhost:3000"
     }
   ]
 }
 ```
-Valid `image_type` values: `"terminal"`, `"env"`, `"api"`, `"ui"`, `"other"`.
-Valid `kind` values: `"npm_scripts"`, `"env_vars"`, `"routes"`, `"ports"`, `"node_version"`.
+
+Rules:
+1. `image_type` must be one of: `"terminal"`, `"env"`, `"api"`, `"ui"`, `"other"`.
+2. For low-quality, blurry, meme, icon, or irrelevant images without clear web config/code claims, return:
+   `{"image_type": "other", "claims": []}`
+3. Each claim must have:
+   - `kind`: one of `"npm_script"`, `"env_var"`, `"route"`, `"port"`, `"engine"`
+   - `text`: the full assertion or sentence found
+   - `quote`: exact verbatim substring read from the image
+4. Return JSON only. No prose, no code fences.
 
