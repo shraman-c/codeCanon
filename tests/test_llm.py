@@ -225,3 +225,4 @@ def test_api_key_never_appears_in_logs_or_exceptions(mock_post, tmp_path, caplog
 
     # Check captured logs
     assert secret_key not in caplog.text
+

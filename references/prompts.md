@@ -72,3 +72,4 @@ Target Schema:
 ```
 Valid `image_type` values: `"terminal"`, `"env"`, `"api"`, `"ui"`, `"other"`.
 Valid `kind` values: `"npm_scripts"`, `"env_vars"`, `"routes"`, `"ports"`, `"node_version"`.
+

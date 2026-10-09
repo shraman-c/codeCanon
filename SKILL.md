@@ -25,3 +25,4 @@ description: Detects documentation drift in JavaScript/TypeScript web projects (
    git apply patch.diff
    ```
    *(TODO: Deterministic patch generator `drift/patch.py` planned for Stage 2)*
+
