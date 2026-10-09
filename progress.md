@@ -63,7 +63,7 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 - **System role:** Test script `scripts/smoke/smoke_system.py` tests standard system message vs folded user prompt. Recommends `DRIFT_FOLD_SYSTEM=false` if accepted, or `true` if folded.
 - **Image input:** Test script `scripts/smoke/smoke_image.py` tests terminal screenshot via OpenAI compat endpoint; native fallback implemented in `scripts/smoke/smoke_image_native.py` using `generateContent` REST endpoint.
 - **Exact Ollama E4B tag:** `gemma4:e4b` (Command: `ollama pull gemma4:e4b`). Tested via `scripts/smoke/smoke_local.py` (skips cleanly if Ollama daemon is not running).
-- **Failures / current errors:** Without `DRIFT_API_KEY` set in local `.env`, Gemini API requests return `400 / 401 API key not valid` as expected. Ollama local test skipped when Ollama is not installed/running.
+- **Failures / current errors:** Without `DRIFT_API_KEY` set in local `.env`, Gemini API requests return  as expected. Ollama local test skipped when Ollama is not installed/running.
 
 ---
 
