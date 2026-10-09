@@ -462,22 +462,43 @@ def write_report(
 # scan command
 # ---------------------------------------------------------------------------
 def run_scan(args: argparse.Namespace, cfg: dict) -> int:
-    repo = Path(args.repo).expanduser().resolve()
+    repo_arg = args.repo
+    is_url = repo_arg.startswith(("http://", "https://", "git@"))
+    
+    temp_dir_obj = None
+    if is_url:
+        import tempfile
+        import subprocess
+        temp_dir_obj = tempfile.TemporaryDirectory(prefix="drift_")
+        repo_name = repo_arg.rstrip("/").split("/")[-1]
+        if repo_name.endswith(".git"):
+            repo_name = repo_name[:-4]
+        clone_dir = Path(temp_dir_obj.name) / repo_name
+        print(f"Cloning {repo_arg} into temporary directory...")
+        res = subprocess.run(["git", "clone", "--depth", "1", repo_arg, str(clone_dir)], capture_output=True, text=True)
+        if res.returncode != 0:
+            print(f"error: failed to clone {repo_arg}:\n{res.stderr}", file=sys.stderr)
+            temp_dir_obj.cleanup()
+            return 2
+        repo = clone_dir.resolve()
+    else:
+        repo = Path(repo_arg).expanduser().resolve()
 
-    no_llm = bool(args.no_llm or cfg.get("no_llm", False))
-    no_images = bool(args.no_images or cfg.get("no_images", False)) or no_llm  # --no-llm also skips images
-    model_override = cfg.get("model")
-    output = Path(cfg.get("output", "drift-report.json"))
+    try:
+        no_llm = bool(args.no_llm or cfg.get("no_llm", False))
+        no_images = bool(args.no_images or cfg.get("no_images", False)) or no_llm  # --no-llm also skips images
+        model_override = cfg.get("model")
+        output = Path(cfg.get("output", "drift-report.json")).resolve()
 
-    if not repo.is_dir():
-        print(f"error: not a directory: {repo}", file=sys.stderr)
-        return 2
+        if not repo.is_dir():
+            print(f"error: not a directory: {repo}", file=sys.stderr)
+            return 2
 
-    # 1. detect -------------------------------------------------------------
-    if not is_web_project(repo):
-        print(not_web_error(repo))
-        return 2
-    proj_kind = detect(repo)
+        # 1. detect -------------------------------------------------------------
+        if not is_web_project(repo):
+            print(not_web_error(repo))
+            return 2
+        proj_kind = detect(repo)
     print(f"Project type: {proj_kind}")
 
     # 2. extract ------------------------------------------------------------
@@ -556,6 +577,10 @@ def run_scan(args: argparse.Namespace, cfg: dict) -> int:
     print("=" * 90)
 
     return 1 if stale > 0 else 0
+
+    finally:
+        if temp_dir_obj is not None:
+            temp_dir_obj.cleanup()
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -29,7 +29,7 @@ class DriftGUI(tk.Tk):
         control_frame.pack(fill=tk.X)
         
         # Directory Selection
-        tk.Label(control_frame, text="Target Repository:", font=("Arial", 10, "bold")).grid(row=0, column=0, sticky="w", pady=5)
+        tk.Label(control_frame, text="Target Dir / GitHub URL:", font=("Arial", 10, "bold")).grid(row=0, column=0, sticky="w", pady=5)
         tk.Entry(control_frame, textvariable=self.target_dir, width=60, font=("Arial", 10)).grid(row=0, column=1, padx=10)
         tk.Button(control_frame, text="Browse...", command=self.browse_dir).grid(row=0, column=2)
         
@@ -53,9 +53,10 @@ class DriftGUI(tk.Tk):
             self.target_dir.set(folder)
 
     def start_scan(self):
-        repo = self.target_dir.get()
-        if not repo or not os.path.isdir(repo):
-            messagebox.showerror("Error", "Please select a valid repository directory.")
+        repo = self.target_dir.get().strip()
+        is_url = repo.startswith(("http://", "https://", "git@"))
+        if not repo or (not is_url and not os.path.isdir(repo)):
+            messagebox.showerror("Error", "Please select a valid repository directory or enter a GitHub URL.")
             return
 
         # Disable run button while running
