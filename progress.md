@@ -183,6 +183,7 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 | 2026-10-09 | Stage 1A extractor build + tests | A | — | Added drift/detect.py, drift/extract_pkg.py, drift/extract_env.py, tests/test_extract_pkg_env.py; manual anyhow checks passed | 
 | 2026-10-09 | Stage 2A route/port extractors + tests | A | — | `extract_routes.py` (App/Pages/Express + same-file prefixes), `extract_ports.py`, `tests/test_extract_routes_ports.py`; full suite 52/52 green |
 | 2026-10-09 | Stage 3A CLI + benchmark runner + next_app fixture | A | — | `scripts/drift.py` (scan/--no-llm/--no-images/--config), `benchmark/run_bench.py`, `benchmark/expected.json`, fixture (7 planted, 10 decoys); bench: text recall 100% vs grep 85.7% |
+| 2026-10-09 | Stage 2B matcher + bugs B4/B5 + Stage 3B image/report | B | — | `match.py` (53 tests), `extract_images.py`, `report.py`; fixed B4 (source="text"), B5 (trailing backticks); benchmark: 100% text recall, 0/10 decoys |
 
 ## Decisions Log
 
