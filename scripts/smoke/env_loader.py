@@ -23,3 +23,4 @@ def get_url():
             pass
         return f"{base}/chat/completions"
     return ""
+
