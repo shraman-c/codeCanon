@@ -394,6 +394,12 @@ def write_report(
         )
         return
 
+    try:
+        from drift.llm import get_token_stats
+        tok_stats = get_token_stats()
+    except Exception:
+        tok_stats = {"calls": 0, "cache_hits": 0, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "saved_tokens": 0}
+
     payload = {
         "metadata": {
             "repo_path": str(repo),
@@ -408,6 +414,7 @@ def write_report(
                 "stale": sum(1 for f in findings if f.status == "STALE"),
                 "suspect": sum(1 for f in findings if f.status == "SUSPECT"),
                 "ok": sum(1 for f in findings if f.status == "OK"),
+                "tokens": tok_stats,
             },
         },
         "facts": [f.__dict__ for f in facts],

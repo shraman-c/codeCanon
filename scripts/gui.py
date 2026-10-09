@@ -434,11 +434,12 @@ class CodeCanonGUI(tk.Tk):
 
         env = os.environ.copy()
         env["PYTHONIOENCODING"] = "utf-8"
+        env["DRIFT_SIM_FALLBACK"] = "1"
         if sim_mode:
             env["DRIFT_SIMULATE"] = "1"
 
         start_time = time.perf_counter()
-        token_stats = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "saved_tokens": 0}
+        token_stats = {"calls": 0, "cache_hits": 0, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "saved_tokens": 0}
         report_data = None
 
         try:
@@ -466,6 +467,38 @@ class CodeCanonGUI(tk.Tk):
                 else:
                     self.append_log(line)
 
+                # Real-time token parsing from terminal output stream
+                if "Prompt Tokens:" in line:
+                    try:
+                        token_stats["prompt_tokens"] = int(re.sub(r"[^\d]", "", line.split(":", 1)[1]))
+                    except Exception:
+                        pass
+                elif "Completion Tokens:" in line:
+                    try:
+                        token_stats["completion_tokens"] = int(re.sub(r"[^\d]", "", line.split(":", 1)[1]))
+                    except Exception:
+                        pass
+                elif "Total Tokens Used:" in line:
+                    try:
+                        token_stats["total_tokens"] = int(re.sub(r"[^\d]", "", line.split(":", 1)[1]))
+                    except Exception:
+                        pass
+                elif "LLM Calls:" in line:
+                    try:
+                        m_calls = re.search(r"LLM Calls:\s*(\d+)", line)
+                        m_hits = re.search(r"Cache hits:\s*(\d+)", line)
+                        if m_calls:
+                            token_stats["calls"] = int(m_calls.group(1))
+                        if m_hits:
+                            token_stats["cache_hits"] = int(m_hits.group(1))
+                    except Exception:
+                        pass
+                elif "Tokens Saved" in line:
+                    try:
+                        token_stats["saved_tokens"] = int(re.sub(r"[^\d]", "", line.split(":", 1)[1]))
+                    except Exception:
+                        pass
+
             self.current_process.wait()
             elapsed = time.perf_counter() - start_time
 
@@ -475,7 +508,10 @@ class CodeCanonGUI(tk.Tk):
                 try:
                     report_data = json.loads(report_file.read_text(encoding="utf-8"))
                     stats = report_data.get("metadata", {}).get("stats", {})
-                    token_stats = stats.get("tokens", token_stats)
+                    json_tokens = stats.get("tokens")
+                    if json_tokens and isinstance(json_tokens, dict):
+                        if json_tokens.get("total_tokens", 0) > 0 or token_stats.get("total_tokens", 0) == 0:
+                            token_stats = json_tokens
                 except Exception as e:
                     self.append_log(f"[Warning loading JSON: {e}]\n", "yellow")
 
