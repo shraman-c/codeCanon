@@ -9,4 +9,5 @@ node_modules/
 Thumbs.db
 drift-report.json
 drift-report.md
+*.patch
 benchmark-site/

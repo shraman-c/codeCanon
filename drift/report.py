@@ -69,6 +69,12 @@ def write_report(
         doc_paths = {c.doc_file for c in claims}
     docs_checked_count = max(len(doc_paths), files_read, 1 if findings else 0)
 
+    try:
+        from .llm import get_token_stats
+        token_stats = get_token_stats()
+    except Exception:
+        token_stats = {"calls": 0, "cache_hits": 0, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+
     # 2. Build JSON payload
     payload = {
       "metadata": {
@@ -86,6 +92,7 @@ def write_report(
           "verified": verified_count,
           "skipped": skipped_count,
           "accuracy_pct": accuracy_pct,
+          "tokens": token_stats,
         },
       },
       "summary": {

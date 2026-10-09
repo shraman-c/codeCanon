@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -487,7 +488,14 @@ def run_scan(args: argparse.Namespace, cfg: dict) -> int:
     try:
         no_llm = bool(args.no_llm or cfg.get("no_llm", False))
         no_images = bool(args.no_images or cfg.get("no_images", False)) or no_llm  # --no-llm also skips images
-        model_override = cfg.get("model")
+        model_override = getattr(args, "model", None) or cfg.get("model")
+        if model_override:
+            os.environ["DRIFT_MODEL"] = model_override
+        try:
+            from drift.llm import reset_token_stats
+            reset_token_stats()
+        except Exception:
+            pass
         output = Path(cfg.get("output", "drift-report.json")).resolve()
 
         if not repo.is_dir():
@@ -563,6 +571,24 @@ def run_scan(args: argparse.Namespace, cfg: dict) -> int:
                 diff_path.write_text(diff, encoding="utf-8")
                 print(f"Unified diff written: {diff_path}")
     
+        # 6.5 token usage -------------------------------------------------------
+        try:
+            from drift.llm import get_token_stats
+            token_stats = get_token_stats()
+        except Exception:
+            token_stats = {"calls": 0, "cache_hits": 0, "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "saved_tokens": 0}
+
+        print("\n" + "=" * 90)
+        print("TOKEN & RESOURCE USAGE:")
+        print(f"  Model:              {model_info['id']} ({model_info['mode']})")
+        print(f"  LLM Calls:          {token_stats.get('calls', 0)} (Cache hits: {token_stats.get('cache_hits', 0)})")
+        print(f"  Prompt Tokens:      {token_stats.get('prompt_tokens', 0):,}")
+        print(f"  Completion Tokens:  {token_stats.get('completion_tokens', 0):,}")
+        print(f"  Total Tokens Used:  {token_stats.get('total_tokens', 0):,}")
+        if token_stats.get("saved_tokens", 0) > 0:
+            print(f"  Tokens Saved (Hit): {token_stats.get('saved_tokens', 0):,}")
+        print("=" * 90)
+
         # 7. summary ------------------------------------------------------------
         print("\n" + "=" * 90)
         print(f"{'STATUS':<9} {'DOC':<24} {'LINE':<6} {'CLAIM'}")
@@ -596,6 +622,8 @@ def main(argv: list[str] | None = None) -> int:
                       help="deterministic only: skips the Gemma 4 judge AND image claims")
     scan.add_argument("--no-images", action="store_true",
                       help="skip image/screenshot claim extraction (text claims only)")
+    scan.add_argument("--model", metavar="NAME",
+                      help="Gemma 4 model override (e.g. gemma-4-31b-it, gemma-4-26b-a4b-it, gemma4:e4b)")
     scan.add_argument("--config", metavar="FILE",
                       help="optional JSON config: {\"no_llm\": bool, \"no_images\": bool, "
                            "\"model\": str, \"output\": str}; CLI flags win")

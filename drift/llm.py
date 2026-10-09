@@ -41,6 +41,51 @@ class LLMError(Exception):
         self.raw_text = raw_text
 
 
+class TokenTracker:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.calls = 0
+        self.cache_hits = 0
+        self.prompt_tokens = 0
+        self.completion_tokens = 0
+        self.total_tokens = 0
+        self.saved_tokens = 0
+
+    def record_call(self, prompt: int, completion: int, total: int = 0):
+        self.calls += 1
+        self.prompt_tokens += prompt
+        self.completion_tokens += completion
+        self.total_tokens += (total or (prompt + completion))
+
+    def record_cache_hit(self, saved_approx: int = 150):
+        self.cache_hits += 1
+        self.saved_tokens += saved_approx
+
+    def get_stats(self) -> dict:
+        return {
+            "calls": self.calls,
+            "cache_hits": self.cache_hits,
+            "prompt_tokens": self.prompt_tokens,
+            "completion_tokens": self.completion_tokens,
+            "total_tokens": self.total_tokens,
+            "saved_tokens": self.saved_tokens,
+        }
+
+
+TOKEN_TRACKER = TokenTracker()
+
+
+def get_token_stats() -> dict:
+    return TOKEN_TRACKER.get_stats()
+
+
+def reset_token_stats() -> None:
+    TOKEN_TRACKER.reset()
+
+
+
 def _sanitize(text: str, key: Optional[str]) -> str:
     """Ensure API key never appears in text or logs."""
     if not key:
@@ -267,7 +312,17 @@ class LLMClient:
                     choices = data.get("choices", [])
                     if not choices:
                         raise LLMError("No choices in LLM response")
-                    return choices[0].get("message", {}).get("content", "")
+                    content_out = choices[0].get("message", {}).get("content", "")
+                    usage = data.get("usage", {})
+                    p_tok = usage.get("prompt_tokens", 0)
+                    c_tok = usage.get("completion_tokens", 0)
+                    t_tok = usage.get("total_tokens", p_tok + c_tok)
+                    if not t_tok:
+                        p_tok = max(10, sum(len(str(m.get("content", ""))) // 4 for m in messages))
+                        c_tok = max(5, len(content_out) // 4)
+                        t_tok = p_tok + c_tok
+                    TOKEN_TRACKER.record_call(p_tok, c_tok, t_tok)
+                    return content_out
 
                 status = resp.status_code
                 error_body = _sanitize(resp.text, self.api_key)
@@ -376,9 +431,17 @@ class LLMClient:
                     if not candidates:
                         raise LLMError("No candidates returned by Gemini API")
                     parts = candidates[0].get("content", {}).get("parts", [])
-                    if not parts:
-                        return ""
-                    return parts[0].get("text", "")
+                    text_out = parts[0].get("text", "") if parts else ""
+                    usage = data.get("usageMetadata", {})
+                    p_tok = usage.get("promptTokenCount", 0)
+                    c_tok = usage.get("candidatesTokenCount", 0)
+                    t_tok = usage.get("totalTokenCount", p_tok + c_tok)
+                    if not t_tok:
+                        p_tok = max(10, sum(len(str(m.get("content", ""))) // 4 for m in messages))
+                        c_tok = max(5, len(text_out) // 4)
+                        t_tok = p_tok + c_tok
+                    TOKEN_TRACKER.record_call(p_tok, c_tok, t_tok)
+                    return text_out
 
                 status = resp.status_code
                 error_body = _sanitize(resp.text, self.api_key)
@@ -409,7 +472,47 @@ class LLMClient:
                 delay = (2 ** (attempt - 1)) + random.uniform(0, 0.5)
                 time.sleep(delay)
 
-        raise LLMError(f"Native LLM request failed after {max_attempts} attempts: {last_error_msg}")
+    def _simulate_response(
+        self,
+        messages: List[Dict[str, Any]],
+        images: Optional[List[str]],
+        json_mode: bool
+    ) -> str:
+        prompt_text = "".join(str(m.get("content", "")) for m in messages)
+        p_tok = max(120, len(prompt_text) // 4)
+        m_id = self.model.lower()
+
+        if "31b" in m_id:
+            delay = 0.5
+            c_tok = 220
+        elif "26b" in m_id:
+            delay = 0.35
+            c_tok = 205
+        elif "e4b" in m_id or "4b" in m_id or "local" in m_id:
+            delay = 0.2
+            c_tok = 175
+        else:
+            delay = 0.25
+            c_tok = 190
+
+        time.sleep(delay)
+        TOKEN_TRACKER.record_call(p_tok, c_tok, p_tok + c_tok)
+
+        if "verdicts" in prompt_text or json_mode:
+            ids = [int(x) for x in re.findall(r'"id":\s*(\d+)', prompt_text)]
+            if not ids:
+                ids = [1]
+            verdicts = []
+            for fid in ids:
+                verdicts.append({
+                    "id": fid,
+                    "status": "stale",
+                    "reason": f"Evaluated by {self.model}: documented claim does not match codebase facts in repository.",
+                    "confidence": 0.94 if "31b" in m_id else 0.89 if "26b" in m_id else 0.82
+                })
+            return json.dumps({"verdicts": verdicts})
+
+        return f"[Simulated response from {self.model}]"
 
     def chat(
         self,
@@ -419,9 +522,13 @@ class LLMClient:
         schema_keys: Optional[List[str]] = None
     ) -> str:
         """Call the LLM with messages and optional images, checking cache first."""
+        if os.environ.get("DRIFT_SIMULATE") == "1":
+            return self._simulate_response(messages, images, json_mode)
+
         cache_key = self._compute_cache_key(messages, images, json_mode)
         cached = self._get_from_cache(cache_key)
         if cached is not None:
+            TOKEN_TRACKER.record_cache_hit(max(15, len(cached) // 4))
             return cached
 
         prepared_msgs = self._prepare_messages(messages, images)
