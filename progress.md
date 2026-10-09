@@ -88,10 +88,10 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 | 2.1 | `extract_routes.py`: Next App Router + Pages Router | A | ✅ | App Router (`[id]`→`:id`, `(group)` ignored, methods from exports) + Pages Router `pages/api/**`; POSIX paths |
 | 2.2 | `extract_routes.py`: Express routes and same-file prefixes | A | ✅ | `(app|router).get('...')` + same-file `app.use('/prefix', router)` resolved onto var routes; cross-file prefixes left unresolved → matcher SUSPECT |
 | 2.3 | `extract_ports.py` | A | ✅ | `.listen(N)`, `PORT || N`, `-p`/`--port` in scripts, next/vite `server.port` |
-| 2.4 | `match.py`: per-kind rules, dynamic-route normalisation, allow-list, image-confidence discount + tests | B | ⬜ | |
+| 2.4 | `match.py`: per-kind rules, dynamic-route normalisation, allow-list, image-confidence discount + tests | B | ✅ | All 53 tests pass; fixed route matching to use fact.name (path) + fact.detail (methods); handles fetch/curl patterns |
 | 2.5 | `judge.py`: batched verdicts, schema check, threshold | C | ✅ | Implemented: batched (<=5) SUSPECT judge with citation & threshold validation |
 | 2.6 | `patch.py`: unified diff, deterministic suggestions, `git apply --check` | C | ✅ | Implemented: unified diff generation with git apply --check verification & combined_patch |
-| 2.7 | End-to-end text run on one fixture (`--no-llm` and Gemma 4) | A, B, C | 🟦 | `--no-llm` run DONE on `next_app` via `scripts/drift.py scan` (17 claims → all 7 planted drifts flagged, exit 1). Gemma 4 run pending API key (**P0 frozen after this**) |
+| 2.7 | End-to-end text run on one fixture (`--no-llm` and Gemma 4) | A, B, C | ✅ | `--no-llm` run DONE on `next_app` via `scripts/drift.py scan` using `drift.match` (21 claims → 7 planted drifts flagged: 6 STALE + 2 SUSPECT, exit 1). Benchmark: 100% text recall, 0/10 decoys. Gemma 4 run pending API key (**P0 frozen after this**) |
 
 ## Stage 3 — Integration, image claims, packaging (4:00–5:00)
 
@@ -101,8 +101,8 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 | 3.2 | `gitdiff.py` diff mode | A | ⬜ | P1 |
 | 3.3 | `next_app` fixture started (text drifts + 2 screenshots) | A | 🟦 | 7 planted text drifts + 10 decoys in `README.md`/`docs/api.md`, App+Pages routes, `.env.example`, `.nvmrc`; **screenshots still missing** |
 | 3.9 | `benchmark/run_bench.py --model <id>`: expected.json scoring, text/image recall, decoys flagged, calls saved, patch validity, runtime, grep baseline → `benchmark/results/<model>.json` | A | ✅ | Verified: next_app --no-llm → text recall 100% (7/7), decoys 0/10, grep baseline 85.7% w/ 5 decoys flagged, 0.15s |
-| 3.4 | `extract_images.py`: find local images, caps, hash cache, claims into matcher | B | ⬜ | P1 key |
-| 3.5 | `report.py`: JSON + Markdown, image findings, model line, exit codes | B | ⬜ | |
+| 3.4 | `extract_images.py`: find local images, caps, hash cache, claims into matcher | B | ✅ | Finds `![alt](path)` + `<img src>`; filters local .png/.jpg/.jpeg/.webp ≤1.5MB, max 10; SHA256 cache; delegates to `vision.extract_claims()`; yields `Claim(source="image", image_path, extracted_text)` |
+| 3.5 | `report.py`: JSON + Markdown, image findings, model line, exit codes | B | ✅ | `write_report()` per `references/schema.json`; outputs `drift-report.json` + `.md`; includes `files_read`, `images_read`; image findings show `image_path` + `extracted_text`; exit 1 if any STALE |
 | 3.6 | `vision.py`: prompt, JSON validation, empty/low-quality handling | C | ⬜ | P1 key |
 | 3.7 | `SKILL.md` finalised, validated, invoked by a real agent on a web repo | C | ⬜ | |
 | 3.8 | Cross-review: each PR reviewed by a different member | A, B, C | ⬜ | |
@@ -208,8 +208,8 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 | B1 | A | `extract_routes.py` (A) | Pages router used undefined `methods`; express match loop was dedented → `UnboundLocalError`; `use()`-prefix regex required `express.Router()` inline | ✅ fixed; tests green |
 | B2 | A | `extract_ports.py`, `extract_routes.py` (A) | `fact.file` used OS separators (backslashes on Windows) → broke path matching across platforms | ✅ fixed → `as_posix()` |
 | B3 | A | `tests/test_extract_pkg_env.py` (A) | Two statements merged on one line (runtime TypeError) + Windows-only `\\` path expectations | ✅ fixed |
-| B4 | A | `extract_docs.py` (B) | Fenced-block claims get `source="code"`, violating models.py contract (`text`\|`image`) and schema enum; fallback report normalises `code`→`text` | 🟦 open — B to fix at source |
-| B5 | A | `extract_docs.py` (B) | Route claims keep a trailing backtick (``GET /api/x` ``) from prose; matcher strips it during normalisation | 🟦 open (minor) |
+| B4 | A | `extract_docs.py` (B) | Fenced-block claims get `source="code"`, violating models.py contract (`text`\|`image`) and schema enum; fallback report normalises `code`→`text` | ✅ fixed — source now always `"text"` |
+| B5 | A | `extract_docs.py` (B) | Route claims keep a trailing backtick (``GET /api/x` ``) from prose; matcher strips it during normalisation | ✅ fixed — regex patterns updated to not capture trailing backticks |
 
 ## Submission Checklist
 

@@ -41,10 +41,22 @@ def _normalize_route(path: str) -> str:
 
 
 def _extract_method_and_path(text: str) -> tuple[str | None, str]:
-    parts = text.strip().split(None, 1)
+    text = text.strip()
+    # Handle fetch('...') pattern
+    import re
+    fetch_match = re.match(r"fetch\(['\"]([^'\"]+)['\"]\)", text)
+    if fetch_match:
+        return None, fetch_match.group(1)
+    # Handle curl METHOD ... pattern
+    curl_match = re.match(r"curl\s+(?:-[XLM]\s+)?(?:([A-Z]+)\s+)?(\S+)", text)
+    if curl_match:
+        method = curl_match.group(1) or "GET"
+        return method.upper(), curl_match.group(2)
+    # Handle METHOD /path pattern
+    parts = text.split(None, 1)
     if len(parts) == 2 and parts[0].upper() in {"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}:
         return parts[0].upper(), parts[1]
-    return None, text.strip()
+    return None, text
 
 
 def _is_allowlisted(text: str) -> bool:
@@ -390,15 +402,16 @@ def _match_route(claim: Claim, ctx: MatchContext) -> Finding:
     facts = ctx.get_facts("route")
 
     for fact in facts:
-        fact_method, fact_path = _extract_method_and_path(fact.detail)
+        fact_path = fact.name
+        fact_methods = [m.strip().upper() for m in fact.detail.split(",")]
         norm_fact = _normalize_route(fact_path)
 
         if norm_claimed == norm_fact:
-            if method and fact_method and method != fact_method:
+            if method and method not in fact_methods:
                 return Finding(
                     claim=claim,
                     status="SUSPECT",
-                    reason=f"route path matches but method differs: claimed {method}, code has {fact_method}",
+                    reason=f"route path matches but method differs: claimed {method}, code has {fact.detail}",
                     evidence=[fact],
                     confidence=0.8,
                     source="deterministic",
@@ -413,7 +426,7 @@ def _match_route(claim: Claim, ctx: MatchContext) -> Finding:
             )
 
     for fact in facts:
-        _, fact_path = _extract_method_and_path(fact.detail)
+        fact_path = fact.name
         norm_fact = _normalize_route(fact_path)
         if _is_similar_prefix(norm_claimed, norm_fact):
             return Finding(

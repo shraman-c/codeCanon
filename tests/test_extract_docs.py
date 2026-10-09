@@ -234,8 +234,7 @@ console.log('hello')
     npm_claims = [c for c in claims if c.kind == "npm_script"]
     assert len(npm_claims) == 2
     sources = {c.source for c in npm_claims}
-    assert "code" in sources
-    assert "text" in sources
+    assert sources == {"text"}
 
 
 def test_localhost_alone_not_extracted():
