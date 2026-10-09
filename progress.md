@@ -4,11 +4,11 @@
 > Status keys: ⬜ not started · 🟦 in progress · ✅ done · 🟥 blocked
 
 **Team:** A = Code/facts side · B = Docs side · C = AI side (Gemma 4)
-Fill in names: A: ________ B: ________ C: ________
-**Start time:** ____ **Deadline:** ____ **Repo URL:** ____
-**Categories entering:** ☐ Best Open-Source AI Project ☐ Best Use of Gemma 4 (MLH allows both? ____)
-**Default model (exact ID):** gemma-4-31b-it · **Fast:** gemma-4-26b-a4b-it · **Local:** Gemma 4 E4B (Ollama tag: ____)
-**Base URL used:** ____ **System role supported?** ☐ yes ☐ no (folding on)
+Fill in names: A: _Spandan_ B: _Spandan_ C: _Spandan_ (one person running Stage 0 verification here)
+**Start time:** 2026-10-09T00:00:00Z **Deadline:** ____ **Repo URL:** https://github.com/shraman-c/codeCanon
+**Categories entering:** ☐ Best Open-Source AI Project ☑ Best Use of Gemma 4 (MLH allows both? **Yes — see decision log, but treat as pending host confirmation**)
+**Default model (exact ID):** gemma-4-31b-it · **Fast:** gemma-4-26b-a4b-it · **Local:** Gemma 4 E4B (Ollama tag: _to confirm_)
+**Base URL used:** `https://generativelanguage.googleapis.com/v1beta/openai` (Gemini API OpenAI-compatible) **System role supported?** ☐ verified ☐ not verified (folding off for now, recheck in Stage 0 smoke tests)
 **Target stacks:** Next.js · Express · Vite/React (JS/TS web repos only)
 
 ---
@@ -17,7 +17,7 @@ Fill in names: A: ________ B: ________ C: ________
 
 | Stage | Window | Status | Done / Total |
 |---|---|---|---|
-| 0 Kickoff | 0:00–0:30 | ⬜ | 0/8 |
+| 0 Kickoff | 0:00–0:30 | 🟦 | 3/8 |
 | 1 Core build | 0:30–2:30 | ⬜ | 0/9 |
 | 2 Routes, matching, judging | 2:30–4:00 | ⬜ | 0/7 |
 | 3 Integration, image claims, packaging | 4:00–5:00 | ⬜ | 0/8 |
@@ -44,14 +44,14 @@ Fill in names: A: ________ B: ________ C: ________
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 0.1 | Repo public, `LICENSE` in first commit, skeleton folders, collaborators added | A | ⬜ | |
-| 0.2 | Real web repos shortlisted (1 Next.js, 1 Express, 1 Vite/React) | A | ⬜ | |
-| 0.3 | Checked MLH rules: can one project enter both categories? | A | ⬜ | |
-| 0.4 | `models.py` (with image-claim fields) + `references/schema.json` agreed | B | ⬜ | |
-| 0.5 | Everyone has their own AI Studio key; `.env.example` committed | A, B, C | ⬜ | |
-| 0.6 | Gemma 4 31B smoke tests: text, JSON output, system role, one image call | C | ⬜ | |
-| 0.7 | Local Ollama Gemma 4 E4B pulled and answering (note exact tag) | C | ⬜ | |
-| 0.8 | Each member can clone, branch, push, open a PR; Agent Skill spec read | A, B, C | ⬜ | |
+| 0.1 | Repo public, `LICENSE` in first commit, skeleton folders, `.gitignore`, collaborators added | A | ✅ | `LICENSE` added here; skeleton dirs already existed; `.gitignore` already covered `.env`, `.drift_cache/`, `__pycache__`, `node_modules` |
+| 0.2 | Real web repos shortlisted (1 Next.js, 1 Express, 1 Vite/React) | A | 🟦 | See **Real-Repo Shortlist** below |
+| 0.3 | Checked MLH rules: can one project enter both categories? | A | ✅ | Yes per organizer docs; same project can appear for every selected challenge. Still confirm the host's exact event page before submitting. |
+| 0.4 | `models.py` (with image-claim fields) + `references/schema.json` agreed | B | ✅ | Fact/Claim/Finding written; Claim has `source`, `image_path`, `extracted_text`; schema draft committed |
+| 0.5 | Everyone has their own AI Studio key; `.env.example` committed | A, B, C | 🟦 | `.env.example` added; keys still need to be created locally and never committed |
+| 0.6 | Gemma 4 31B smoke tests: text, JSON output, system role, one image call | C | ⬜ | Not run here yet; base URL + model recorded; key needed |
+| 0.7 | Local Ollama Gemma 4 E4B pulled and answering (note exact tag) | C | ⬜ | Ollama not checked here yet; tag must be confirmed at ollama.com/library |
+| 0.8 | Each member can clone, branch, push, open a PR; Agent Skill spec read | A, B, C | 🟦 | Repo already exists and is pushable; Agent Skill spec still needs a fresh read |
 
 ## Stage 1 — Core build (0:30–2:30)
 
@@ -99,9 +99,9 @@ Fill in names: A: ________ B: ________ C: ________
 | 4.1 | `next_app` fixture complete: ~10 text drifts + ~4 decoys + 2 screenshots | A | ⬜ | |
 | 4.2 | `express_api` fixture complete: ~10 text drifts + ~4 decoys + 2 screenshots | B | ⬜ | |
 | 4.3 | `vite_react` fixture complete: ~10 text drifts + ~4 decoys + 2 screenshots | C | ⬜ | |
-| 4.4 | Real Next.js repo run + bug notes | A | ⬜ | Repo: |
-| 4.5 | Real Express repo run + bug notes | B | ⬜ | Repo: |
-| 4.6 | Real Vite/React repo run + bug notes | C | ⬜ | Repo: |
+| 4.4 | Real Next.js repo run + bug notes | A | ⬜ | Repo: `<Next.js shortlist pick>` |
+| 4.5 | Real Express repo run + bug notes | B | ⬜ | Repo: `<Express shortlist pick>` |
+| 4.6 | Real Vite/React repo run + bug notes | C | ⬜ | Repo: `<Vite/React shortlist pick>` |
 | 4.7 | Benchmark with `gemma-4-31b-it` (API) | A | ⬜ | |
 | 4.8 | Benchmark with `gemma-4-26b-a4b-it` (API) | B | ⬜ | |
 | 4.9 | Benchmark with Gemma 4 E4B (local) | C | ⬜ | |
@@ -123,6 +123,18 @@ Fill in names: A: ________ B: ________ C: ________
 | 5.9 | Tag `v0.1.0`; submit via "Add Submission" in each eligible category | All | ⬜ | |
 
 ---
+
+## Real-Repo Shortlist (Stage 0 pick; refine before Stage 4)
+
+Pick small, well-documented public repos with a real README and `package.json`.
+
+| Stack | Pick | Why this one this round |
+|---|---|---|
+| Next.js | `https://github.com/vercel/next.js` (too large — use a small example sub-repo or a well-documented Next.js starter instead) | Placeholder; narrow to a small Next.js example for the real-repo run |
+| Express | `https://github.com/gothinkster/node-express-realworld-example-app` | Small, documented Express + Prisma-style API example |
+| Vite/React | `https://github.com/amannn/vite-react-starter` | Minimal Vite + React starter; good for real-repo smoke test if reachable |
+
+Note: the shortlist above is provisional until Stage 4 picks are rechecked for reachability and docs quality. The repo list still needs one concrete small Next.js repo; do not treat the large monorepo as the real-repo target.
 
 ## Benchmark Results (fill in at Stage 4)
 
@@ -149,21 +161,23 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 
 | Time | PR / commit | Author | Reviewer | Summary |
 |---|---|---|---|---|
-| | | | | |
+| 2026-10-09 | initial Stage 0 verification commit (LICENSE, models, schema, .env.example, progress update) | A/B/C | — | Stage 0 scaffolding started |
 
 ## Decisions Log
 
 | Time | Decision | Why | Who |
 |---|---|---|---|
-| | Scope = JS/TS web repos only (Next, Express, Vite/React) | | |
-| | Default model = Gemma 4 (31B via Gemini API) | Track fit, open weights, multimodal | |
-| | Entering categories: ____ | | |
+| 2026-10-09 | Scope = JS/TS web repos only (Next, Express, Vite/React) | track brief + TRD | all |
+| 2026-10-09 | Default model = Gemma 4 (31B via Gemini API) | track fit, open weights, multimodal | all |
+| 2026-10-09 | Entering categories: Best Open-Source AI Project + Best Use of Gemma 4 (both eligible per MLH organizer docs, pending host confirmation) | organizer guidance says same project can be submitted to every selected challenge | A |
+| 2026-10-09 | `.env.example` committed; real keys stay local and git-ignored | keep keys out of history | all |
+| 2026-10-09 | Gemma 4 smoke tests not run from this environment yet | keys/runtime not available here; record plan + required IDs instead | C |
 
 ## Blockers
 
 | Time | Blocker | Owner | Resolution |
 |---|---|---|---|
-| | | | |
+| 2026-10-09 | AI Studio key not created in this workspace; Gemma 4 smoke tests not run here | C | create key locally and retry smoke tests before Stage 1; record model IDs/tags once confirmed |
 
 ## Bugs Found in Testing
 
