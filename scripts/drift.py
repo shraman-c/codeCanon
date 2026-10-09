@@ -23,6 +23,12 @@ import re
 import sys
 from pathlib import Path
 
+# Ensure UTF-8 stdout/stderr on Windows console
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # Ensure repository root is in sys.path when run as a script.
 root_dir = Path(__file__).resolve().parent.parent
 if str(root_dir) not in sys.path:
@@ -543,19 +549,34 @@ def run_scan(args: argparse.Namespace, cfg: dict) -> int:
             print(f"Unified diff written: {diff_path}")
 
     # 7. summary ------------------------------------------------------------
-    print("\n" + "=" * 90)
-    print(f"{'STATUS':<9} {'DOC':<24} {'LINE':<6} {'CLAIM'}")
-    print("-" * 90)
-    for f in findings:
-        if f.status == "OK":
-            continue
-        doc = Path(f.claim.doc_file).name
-        claim_txt = f.claim.text if len(f.claim.text) <= 55 else f.claim.text[:52] + "..."
-        print(f"{f.status:<9} {doc:<24} {f.claim.line:<6} {claim_txt}")
-        print(f"          -> {f.reason}")
-    print("=" * 90)
+    md_path = output.with_suffix(".md")
+    if md_path.exists():
+        print("\n" + "=" * 90)
+        print(md_path.read_text(encoding="utf-8").strip())
+        print("=" * 90)
+    else:
+        print("\n" + "=" * 90)
+        print(f"{'STATUS':<9} {'DOC':<24} {'LINE':<6} {'CLAIM'}")
+        print("-" * 90)
+        for f in findings:
+            if f.status == "OK":
+                continue
+            doc = Path(f.claim.doc_file).name
+            claim_txt = f.claim.text if len(f.claim.text) <= 55 else f.claim.text[:52] + "..."
+            print(f"{f.status:<9} {doc:<24} {f.claim.line:<6} {claim_txt}")
+            print(f"          -> {f.reason}")
+        print("=" * 90)
 
-    return 1 if stale > 0 else 0
+    # Determine exit code based on actual broken problems reported
+    real_broken = stale
+    if output.exists():
+        try:
+            report_data = json.loads(output.read_text(encoding="utf-8"))
+            real_broken = report_data.get("summary", {}).get("broken_count", stale)
+        except Exception:
+            pass
+
+    return 1 if real_broken > 0 else 0
 
 
 def main(argv: list[str] | None = None) -> int:

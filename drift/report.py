@@ -222,11 +222,16 @@ def _build_markdown(
     lines.append(f"**Docs accuracy: {accuracy_pct}%** `{bar}`")
     lines.append("")
 
-    lines.append("| 🔴 Broken | 🟡 Check | 🟢 Verified | ⚪ Skipped as noise |")
-    lines.append("|:-:|:-:|:-:|:-:|")
-    lines.append(
-        f"| **{broken_count}** problems | **{check_count}** to check | **{verified_count}** claims | **{skipped_count}** fragments |"
-    )
+    summary_headers = ["🔴 Broken", "🟡 Check", "🟢 Verified", "⚪ Skipped as noise"]
+    summary_rows = [
+        [
+            f"**{broken_count}** problems",
+            f"**{check_count}** to check",
+            f"**{verified_count}** claims",
+            f"**{skipped_count}** fragments",
+        ]
+    ]
+    lines.extend(_format_table(summary_headers, summary_rows, ["center", "center", "center", "center"]))
     lines.append("")
 
     # Heads-up note if needed
@@ -275,16 +280,16 @@ def _build_markdown(
 
             lines.append(f"### {cat_title} ({len(items)})")
             lines.append("")
-            lines.append("| Priority | Docs say | Where | What's wrong |")
-            lines.append("|:-:|---|---|---|")
-
+            cat_headers = ["Priority", "Docs say", "Where", "What's wrong"]
+            cat_rows = []
             for f in items:
                 priority = "High" if cat_kind in ("route", "npm_script") else "Medium"
                 doc_name = Path(f.claim.doc_file).name
                 claim_txt = f.claim.text.replace("|", "\\|")
                 reason = f.reason.replace("|", "\\|")
-                lines.append(f"| {priority} | `{claim_txt}` | `{doc_name}` L{f.claim.line} | {reason} |")
+                cat_rows.append([priority, f"`{claim_txt}`", f"`{doc_name}` L{f.claim.line}", reason])
 
+            lines.extend(_format_table(cat_headers, cat_rows, ["center", "left", "left", "left"]))
             lines.append("")
             lines.append(
                 f"**What to do:** Update or remove the {cat_title.lower()} in the docs. If it should exist, check whether it was deleted by mistake."
@@ -305,19 +310,22 @@ def _build_markdown(
     else:
         lines.append("These look like a rename or typo. The docs say one thing, the code has something very similar.")
         lines.append("")
-        lines.append("| Docs say | Code has | Match | Suggested fix | Where |")
-        lines.append("|---|---|:-:|---|---|")
-
+        check_headers = ["Docs say", "Code has", "Match", "Suggested fix", "Where"]
+        check_rows = []
         for f in check:
             doc_name = Path(f.claim.doc_file).name
             evidence_name = f.evidence[0].name if f.evidence else "similar item"
-            # Extract similarity % if in reason
             sim_match = re.search(r"similarity=([0-9.]+)", f.reason)
             pct_str = f"{int(float(sim_match.group(1)) * 100)}%" if sim_match else "85%"
             suggested = f"Update to `{evidence_name}`"
-            lines.append(
-                f"| `{f.claim.text}` | `{evidence_name}` | {pct_str} | {suggested} | `{doc_name}` L{f.claim.line} |"
-            )
+            check_rows.append([
+                f"`{f.claim.text}`",
+                f"`{evidence_name}`",
+                pct_str,
+                suggested,
+                f"`{doc_name}` L{f.claim.line}",
+            ])
+        lines.extend(_format_table(check_headers, check_rows, ["left", "left", "center", "left", "left"]))
         lines.append("")
 
     # Screenshots
@@ -365,8 +373,8 @@ def _build_markdown(
     # Health by document
     lines.append("## 📊 Health by document")
     lines.append("")
-    lines.append("| Document | Accuracy | 🔴 | 🟡 | 🟢 |")
-    lines.append("|---|---|:-:|:-:|:-:|")
+    health_headers = ["Document", "Accuracy", "🔴", "🟡", "🟢"]
+    health_rows = []
 
     # Group by doc_name
     by_doc: dict[str, list[Finding]] = {}
@@ -391,8 +399,15 @@ def _build_markdown(
         doc_bar = "█" * doc_blocks + "░" * (10 - doc_blocks)
 
         note_icon = " 📝" if any(w in doc_name.lower() for w in ("progress", "security", "notes", "changelog")) else ""
-        lines.append(f"| `{doc_name}`{note_icon} | `{doc_bar}` {doc_acc}% | {doc_broken} | {doc_check} | {doc_ok} |")
+        health_rows.append([
+            f"`{doc_name}`{note_icon}",
+            f"`{doc_bar}` {doc_acc}%",
+            str(doc_broken),
+            str(doc_check),
+            str(doc_ok),
+        ])
 
+    lines.extend(_format_table(health_headers, health_rows, ["left", "left", "center", "center", "center"]))
     lines.append("")
     lines.append("📝 = internal notes or changelog. Drift matters less there than in README and API docs.")
     lines.append("")
@@ -418,12 +433,14 @@ def _build_markdown(
     lines.append("")
     lines.append("Listed for transparency. These were left out of the counts above.")
     lines.append("")
-    lines.append("| Where | Text | Why skipped |")
-    lines.append("|---|---|---|")
+    skipped_headers = ["Where", "Text", "Why skipped"]
+    skipped_rows = []
     for f, reason in skipped_noise:
         doc_name = Path(f.claim.doc_file).name
         clean_txt = f.claim.text.replace("|", "\\|")
-        lines.append(f"| `{doc_name}` L{f.claim.line} | `{clean_txt}` | {reason} |")
+        skipped_rows.append([f"`{doc_name}` L{f.claim.line}", f"`{clean_txt}`", reason])
+
+    lines.extend(_format_table(skipped_headers, skipped_rows, ["left", "left", "left"]))
     lines.append("")
     lines.append("</details>")
     lines.append("")
@@ -434,6 +451,60 @@ def _build_markdown(
     )
 
     return "\n".join(lines)
+
+
+def _format_table(
+    headers: list[str],
+    rows: list[list[str]],
+    aligns: list[str] | None = None,
+) -> list[str]:
+    """Format a markdown table with aligned column widths for clean monospace/GUI display."""
+    num_cols = len(headers)
+    if not num_cols:
+        return []
+
+    # Calculate max width for each column
+    col_widths = [len(h) for h in headers]
+    for row in rows:
+        for i in range(min(num_cols, len(row))):
+            col_widths[i] = max(col_widths[i], len(str(row[i])))
+    col_widths = [max(w, 3) for w in col_widths]
+
+    def pad_cell(text: str, width: int, align: str) -> str:
+        if align == "center":
+            return text.center(width)
+        elif align == "right":
+            return text.rjust(width)
+        return text.ljust(width)
+
+    header_cells = [
+        pad_cell(headers[i], col_widths[i], aligns[i] if aligns else "left")
+        for i in range(num_cols)
+    ]
+    header_line = "| " + " | ".join(header_cells) + " |"
+
+    sep_cells = []
+    for i in range(num_cols):
+        align = aligns[i] if aligns and i < len(aligns) else "left"
+        w = col_widths[i]
+        if align == "center":
+            sep_cells.append(":" + "-" * max(1, w - 2) + ":")
+        elif align == "right":
+            sep_cells.append("-" * max(1, w - 1) + ":")
+        else:
+            sep_cells.append(":" + "-" * max(1, w - 1))
+    sep_line = "| " + " | ".join(sep_cells) + " |"
+
+    table_lines = [header_line, sep_line]
+    for row in rows:
+        cells = []
+        for i in range(num_cols):
+            val = str(row[i]) if i < len(row) else ""
+            align = aligns[i] if aligns and i < len(aligns) else "left"
+            cells.append(pad_cell(val, col_widths[i], align))
+        table_lines.append("| " + " | ".join(cells) + " |")
+
+    return table_lines
 
 
 def _category_name(kind: str) -> str:
