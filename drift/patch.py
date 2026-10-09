@@ -227,6 +227,7 @@ def patch(findings: list[Finding], repo: Path) -> list[Finding]:
                 ["git", "apply", "--check", "-"],
                 input=patch_str,
                 text=True,
+                encoding="utf-8",
                 cwd=repo_path,
                 capture_output=True,
             )
