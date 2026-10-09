@@ -242,13 +242,26 @@ class CodeCanonGUI(tk.Tk):
         self.output_area.pack(fill=tk.BOTH, expand=True)
 
         # Tag configurations for syntax highlighting
-        self.output_area.tag_config("green", foreground="#a6e3a1")
-        self.output_area.tag_config("yellow", foreground="#f9e2af")
-        self.output_area.tag_config("red", foreground="#f38ba8")
-        self.output_area.tag_config("cyan", foreground="#89dceb")
-        self.output_area.tag_config("blue", foreground="#89b4fa")
-        self.output_area.tag_config("purple", foreground="#cba6f7")
-        self.output_area.tag_config("bold", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("green", foreground="#a6e3a1", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("yellow", foreground="#f9e2af", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("red", foreground="#f38ba8", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("cyan", foreground="#89dceb", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("blue", foreground="#89b4fa", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("purple", foreground="#cba6f7", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("gray", foreground="#6c7086")
+        self.output_area.tag_config("bold", foreground="#ffffff", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("header1", foreground="#89b4fa", font=("Consolas", 12, "bold"))
+        self.output_area.tag_config("header2", foreground="#a6e3a1", font=("Consolas", 11, "bold"))
+        self.output_area.tag_config("header3", foreground="#f9e2af", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("code", foreground="#fab387", font=("Consolas", 10))
+        self.output_area.tag_config("bar_filled", foreground="#a6e3a1", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("bar_empty", foreground="#585b70", font=("Consolas", 10))
+        self.output_area.tag_config("alert_warn", foreground="#fab387", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("alert_info", foreground="#89b4fa", font=("Consolas", 10))
+        self.output_area.tag_config("quote", foreground="#a6adc8", font=("Consolas", 10, "italic"))
+        self.output_area.tag_config("table_border", foreground="#89b4fa", font=("Consolas", 10, "bold"))
+        self.output_area.tag_config("table_sep", foreground="#585b70", font=("Consolas", 10))
+        self.output_area.tag_config("table_header", foreground="#89dceb", font=("Consolas", 10, "bold"))
 
     def create_comparison_tab(self):
         # Top toolbar
@@ -351,7 +364,76 @@ class CodeCanonGUI(tk.Tk):
         self.output_area.delete(1.0, tk.END)
 
     def append_log(self, text: str, tag: str | None = None):
-        self.output_area.insert(tk.END, text, tag or ())
+        if tag is not None:
+            self.output_area.insert(tk.END, text, tag)
+            self.output_area.see(tk.END)
+            return
+
+        lines = text.splitlines(keepends=True)
+        for line in lines:
+            stripped = line.strip()
+
+            if stripped.startswith("# ") and not stripped.startswith("## "):
+                self.output_area.insert(tk.END, line, "header1")
+                continue
+            if stripped.startswith("## ") and not stripped.startswith("### "):
+                self.output_area.insert(tk.END, line, "header2")
+                continue
+            if stripped.startswith("### "):
+                self.output_area.insert(tk.END, line, "header3")
+                continue
+            if stripped.startswith("> "):
+                if "⚠️" in stripped or "Heads-up" in stripped:
+                    self.output_area.insert(tk.END, line, "alert_warn")
+                elif "💡" in stripped or "🔎" in stripped:
+                    self.output_area.insert(tk.END, line, "alert_info")
+                else:
+                    self.output_area.insert(tk.END, line, "quote")
+                continue
+            if stripped.startswith("|") and re.match(r"^\|[\s:\-|]+\|$", stripped):
+                self.output_area.insert(tk.END, line, "table_sep")
+                continue
+
+            token_pattern = re.compile(
+                r'(\|)|(🔴[^\s*`|]*|🟢[^\s*`|]*|🟡[^\s*`|]*|⚪[^\s*`|]*|'
+                r'\bSTALE\b|\bOK\b|\bSUSPECT\b|\bBroken\b|\bVerified\b|\bCheck\b|'
+                r'█+|░+|`[^`]+`|\*\*[^*]+\*\*)'
+            )
+
+            pos = 0
+            for m in token_pattern.finditer(line):
+                start, end = m.span()
+                if start > pos:
+                    self.output_area.insert(tk.END, line[pos:start])
+                
+                if m.group(1):
+                    self.output_area.insert(tk.END, m.group(1), "table_border")
+                else:
+                    tok = m.group(2)
+                    t = None
+                    if any(x in tok for x in ("🔴", "STALE", "Broken")):
+                        t = "red"
+                    elif any(x in tok for x in ("🟢", "OK", "Verified")):
+                        t = "green"
+                    elif any(x in tok for x in ("🟡", "SUSPECT", "Check")):
+                        t = "yellow"
+                    elif any(x in tok for x in ("⚪", "Skipped")):
+                        t = "gray"
+                    elif tok.startswith("█"):
+                        t = "bar_filled"
+                    elif tok.startswith("░"):
+                        t = "bar_empty"
+                    elif tok.startswith("`"):
+                        t = "code"
+                    elif tok.startswith("**"):
+                        t = "bold"
+
+                    self.output_area.insert(tk.END, tok, t)
+                pos = end
+
+            if pos < len(line):
+                self.output_area.insert(tk.END, line[pos:])
+
         self.output_area.see(tk.END)
 
     def set_running_state(self, running: bool):
@@ -379,8 +461,8 @@ class CodeCanonGUI(tk.Tk):
 
     def start_single_scan(self):
         repo = self.target_dir.get().strip()
-        if not repo:
-            messagebox.showerror("Error", "Please select a target repository.")
+        if not repo or not os.path.isdir(repo):
+            messagebox.showerror("Error", "Please select a valid repository directory.")
             return
 
         self.set_running_state(True)
@@ -425,13 +507,11 @@ class CodeCanonGUI(tk.Tk):
             cmd.extend(["--model", model_id])
         if no_images:
             cmd.append("--no-images")
-
         self.append_log(f"================================================================================\n", "blue")
         self.append_log(f"Starting Scan: {repo}\n", "bold")
         self.append_log(f"Model: {model_id} | No-LLM: {no_llm} | Sim-Mode: {sim_mode}\n", "purple")
         self.append_log(f"Command: {' '.join(cmd)}\n", "cyan")
         self.append_log(f"================================================================================\n\n", "blue")
-
         env = os.environ.copy()
         env["PYTHONIOENCODING"] = "utf-8"
         env["DRIFT_SIM_FALLBACK"] = "1"
@@ -456,16 +536,7 @@ class CodeCanonGUI(tk.Tk):
 
             # Stream output
             for line in self.current_process.stdout:
-                if "TOKEN & RESOURCE USAGE" in line:
-                    self.append_log(line, "green")
-                elif "STALE" in line:
-                    self.append_log(line, "red")
-                elif "SUSPECT" in line:
-                    self.append_log(line, "yellow")
-                elif "OK" in line or "Verified" in line:
-                    self.append_log(line, "green")
-                else:
-                    self.append_log(line)
+                self.append_log(line)
 
                 # Real-time token parsing from terminal output stream
                 if "Prompt Tokens:" in line:
@@ -731,7 +802,6 @@ class CodeCanonGUI(tk.Tk):
                 messagebox.showerror("Error", f"Failed to open file: {e}")
         else:
             messagebox.showinfo("Not Found", "drift-report.md does not exist yet. Run a scan first.")
-
 
 if __name__ == "__main__":
     app = CodeCanonGUI()
