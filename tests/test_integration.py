@@ -229,11 +229,12 @@ def test_image_discount():
 def test_cli_scan_help():
     """Test CLI help works."""
     import subprocess
+    repo_root = Path(__file__).resolve().parent.parent
     result = subprocess.run(
         ["python", "scripts/drift.py", "scan", "--help"],
         capture_output=True,
         text=True,
-        cwd="D:\\codeCanon",
+        cwd=repo_root,
     )
     assert result.returncode == 0
     assert "scan" in result.stdout
