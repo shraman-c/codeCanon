@@ -512,15 +512,7 @@ class LLMClient:
         p_tok = max(120, len(prompt_text) // 4)
         m_id = self.model.lower()
 
-        if "31b" in m_id:
-            delay = 0.35
-        elif "26b" in m_id:
-            delay = 0.25
-        elif "e4b" in m_id or "4b" in m_id or "local" in m_id:
-            delay = 0.15
-        else:
-            delay = 0.2
-
+        delay = 0.02
         time.sleep(delay)
 
         # Parse findings in messages to return verdicts citing candidate facts

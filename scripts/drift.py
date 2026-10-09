@@ -475,9 +475,7 @@ def write_report(
 # ---------------------------------------------------------------------------
 # scan command
 # ---------------------------------------------------------------------------
-def run_scan(args: argparse.Namespace, cfg: dict) -> int:
-    repo = Path(args.repo).expanduser().resolve()
-
+def _do_run_scan(repo: Path, args: argparse.Namespace, cfg: dict) -> int:
     no_llm = bool(args.no_llm or cfg.get("no_llm", False))
     no_images = bool(args.no_images or cfg.get("no_images", False)) or no_llm  # --no-llm also skips images
     model_override = getattr(args, "model", None) or cfg.get("model")
@@ -609,6 +607,36 @@ def run_scan(args: argparse.Namespace, cfg: dict) -> int:
             pass
 
     return 1 if real_broken > 0 else 0
+
+
+def run_scan(args: argparse.Namespace, cfg: dict) -> int:
+    repo_arg = args.repo
+    is_url = repo_arg.startswith(("http://", "https://", "git@"))
+
+    temp_dir_obj = None
+    if is_url:
+        import tempfile
+        import subprocess
+        temp_dir_obj = tempfile.TemporaryDirectory(prefix="drift_")
+        repo_name = repo_arg.rstrip("/").split("/")[-1]
+        if repo_name.endswith(".git"):
+            repo_name = repo_name[:-4]
+        clone_dir = Path(temp_dir_obj.name) / repo_name
+        print(f"Cloning {repo_arg} into temporary directory...")
+        res = subprocess.run(["git", "clone", "--depth", "1", repo_arg, str(clone_dir)], capture_output=True, text=True)
+        if res.returncode != 0:
+            print(f"error: failed to clone {repo_arg}:\n{res.stderr}", file=sys.stderr)
+            temp_dir_obj.cleanup()
+            return 2
+        repo = clone_dir.resolve()
+    else:
+        repo = Path(repo_arg).expanduser().resolve()
+
+    try:
+        return _do_run_scan(repo, args, cfg)
+    finally:
+        if temp_dir_obj is not None:
+            temp_dir_obj.cleanup()
 
 
 def main(argv: list[str] | None = None) -> int:
