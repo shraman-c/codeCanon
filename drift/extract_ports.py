@@ -73,7 +73,7 @@ def extract_ports(repo: Path) -> list[Fact]:
 
 def _ports_from_file(path: Path, repo: Path) -> list[Fact]:
     facts: list[Fact] = []
-    relative = str(path.relative_to(repo))
+    relative = path.relative_to(repo).as_posix()
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
     except OSError:
@@ -138,7 +138,7 @@ def _config_port_facts(repo: Path) -> list[Fact]:
                     kind="port",
                     name=cfg.name,
                     detail=f"{cfg.name} server.port = {port}",
-                    file=str(cfg.relative_to(repo)),
+                    file=cfg.relative_to(repo).as_posix(),
                     line=text[: m.start()].count("\n") + 1,
                 )
             )

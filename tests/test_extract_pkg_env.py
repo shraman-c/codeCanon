@@ -326,7 +326,8 @@ class TestStage2ManualFixturePrinter:
         (repo / "app" / "layout.tsx").write_text("export default function Layout() { return null; }")
 
         (repo / "pages").mkdir()
-        (repo / "pages" / "api").mkdir()        (repo / "pages" / "api" / "legacy.js").write_text(
+        (repo / "pages" / "api").mkdir()
+        (repo / "pages" / "api" / "legacy.js").write_text(
             "export default function handler(req, res) {\n"
             "  res.status(200).json({ ok: true });\n"
             "}\n"
@@ -359,15 +360,15 @@ class TestStage2ManualFixturePrinter:
 
         assert any(r.kind == "route" for r in routes), "expected at least one route"
         assert any(p.kind == "port" for p in ports), "expected at least one port"
-        assert "app\\api\\users\\route.ts" in routes_by_file, f"expected app/api/users route, got {list(routes_by_file)}"
-        assert "app\\api\\users\\[id]\\route.ts" in routes_by_file, f"expected app/api/users/[id] route, got {list(routes_by_file)}"
-        assert "app\\api\\posts\\(draft)\\route.ts" in routes_by_file, f"expected app/api/posts route, got {list(routes_by_file)}"
-        assert "pages\\api\\legacy.js" in routes_by_file, f"expected pages/api/legacy.js route, got {list(routes_by_file)}"
-        assert "pages\\api\\items\\[slug].js" in routes_by_file, f"expected pages/api/items/[slug].js route, got {list(routes_by_file)}"
-        assert "src\\express\\app.js" in routes_by_file, f"expected express app.js routes, got {list(routes_by_file)}"
-        assert "src\\server.js" in ports_by_file, f"expected src/server.js port, got {list(ports_by_file)}"
-        assert "src\\dynamic.js" in ports_by_file, f"expected src/dynamic.js port, got {list(ports_by_file)}"
-        assert "src\\server2.ts" in ports_by_file, f"expected src/server2.ts port, got {list(ports_by_file)}"
+        assert "app/api/users/route.ts" in routes_by_file, f"expected app/api/users route, got {list(routes_by_file)}"
+        assert "app/api/users/[id]/route.ts" in routes_by_file, f"expected app/api/users/[id] route, got {list(routes_by_file)}"
+        assert "app/api/posts/(draft)/route.ts" in routes_by_file, f"expected app/api/posts route, got {list(routes_by_file)}"
+        assert "pages/api/legacy.js" in routes_by_file, f"expected pages/api/legacy.js route, got {list(routes_by_file)}"
+        assert "pages/api/items/[slug].js" in routes_by_file, f"expected pages/api/items/[slug].js route, got {list(routes_by_file)}"
+        assert "src/express/app.js" in routes_by_file, f"expected express app.js routes, got {list(routes_by_file)}"
+        assert "src/server.js" in ports_by_file, f"expected src/server.js port, got {list(ports_by_file)}"
+        assert "src/dynamic.js" in ports_by_file, f"expected src/dynamic.js port, got {list(ports_by_file)}"
+        assert "src/server2.ts" in ports_by_file, f"expected src/server2.ts port, got {list(ports_by_file)}"
         assert "next.config.js" in ports_by_file, f"expected next.config.js port, got {list(ports_by_file)}"
         assert any(r.detail == "GET,POST" for r in routes), "expected GET,POST on users route"
         assert any(p.name == "dev" for p in ports), "expected dev script port"

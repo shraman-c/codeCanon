@@ -1,0 +1,61 @@
+{
+  "model": "gemma-4-31b-it",
+  "mode": "no-llm",
+  "generated_at": "2026-10-09T09:10:29.168602+00:00",
+  "runtime_s": 0.134,
+  "llm": {
+    "enabled": false,
+    "calls_made": 0,
+    "calls_saved": 1
+  },
+  "aggregate": {
+    "text_planted": 7,
+    "text_detected": 7,
+    "decoys": 10,
+    "decoys_wrongly_flagged": 0,
+    "image_planted": 0,
+    "image_detected": 0,
+    "patches_generated": 0,
+    "patches_needs_review": 5,
+    "llm_calls_saved": 1,
+    "grep_text_planted": 7,
+    "grep_text_detected": 6,
+    "grep_decoys_wrongly_flagged": 5,
+    "runtime_s": 0.134,
+    "text_recall": 1.0,
+    "image_recall": null,
+    "grep_text_recall": 0.8571428571428571
+  },
+  "fixtures": {
+    "next_app": {
+      "text_planted": 7,
+      "text_detected": 7,
+      "text_recall": 1.0,
+      "image_planted": 0,
+      "image_detected": 0,
+      "image_recall": null,
+      "decoys": 10,
+      "decoys_wrongly_flagged": 0,
+      "image_decoys_wrongly_flagged": 0,
+      "findings_total": 17,
+      "stale": 5,
+      "suspect": 2,
+      "ok": 10,
+      "unlisted_stale": [],
+      "patches_generated": 0,
+      "patches_needs_review": 5,
+      "patch_validity": 0.0,
+      "suspects_at_judge": 2,
+      "runtime_s": 0.134,
+      "exit_code": 1,
+      "grep_baseline": {
+        "text_planted": 7,
+        "text_detected": 6,
+        "text_recall": 0.8571428571428571,
+        "decoys": 10,
+        "decoys_wrongly_flagged": 5
+      },
+      "llm_calls_saved": 1
+    }
+  }
+}

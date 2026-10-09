@@ -1,0 +1,39 @@
+{
+  "next_app": {
+    "planted": [
+      { "kind": "npm_script", "text": "npm run seed", "doc": "docs/api.md" },
+      { "kind": "route", "text": "GET /api/orders", "doc": "docs/api.md" },
+      { "kind": "npm_script", "text": "npm run serve", "doc": "README.md" },
+      { "kind": "route", "text": "GET /api/v2/users", "doc": "README.md" },
+      { "kind": "env_var", "text": "STRIPE_SECRET_KEY=sk_live_secret", "doc": "README.md" },
+      { "kind": "port", "text": "port 4000", "doc": "README.md" },
+      { "kind": "engine", "text": "node 16.20.0", "doc": "README.md" }
+    ],
+    "decoys": [
+      { "kind": "npm_script", "text": "pnpm build", "doc": "docs/api.md" },
+      { "kind": "npm_script", "text": "npm install", "doc": "README.md" },
+      { "kind": "engine", "text": "node 20.11.0", "doc": "README.md" },
+      { "kind": "port", "text": "localhost:3000", "doc": "README.md" },
+      { "kind": "route", "text": "GET /api/users", "doc": "README.md" },
+      { "kind": "route", "text": "POST /api/users", "doc": "README.md" },
+      { "kind": "route", "text": "fetch('/api/users/:id')", "doc": "README.md" },
+      { "kind": "route", "text": "/api/users/:id", "doc": "README.md" },
+      { "kind": "env_var", "text": "DATABASE_URL=postgresql://demo", "doc": "README.md" },
+      { "kind": "env_var", "text": "NEXT_PUBLIC_API_URL=https://api.example.com", "doc": "README.md" }
+    ],
+    "image_planted": [],
+    "image_decoys": []
+  },
+  "express_api": {
+    "planted": [],
+    "decoys": [],
+    "image_planted": [],
+    "image_decoys": []
+  },
+  "vite_react": {
+    "planted": [],
+    "decoys": [],
+    "image_planted": [],
+    "image_decoys": []
+  }
+}

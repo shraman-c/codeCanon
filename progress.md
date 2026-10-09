@@ -18,9 +18,9 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 | Stage | Window | Status | Done / Total |
 |---|---|---|---|
 | 0 Kickoff | 0:00–0:30 | ✅ | 8/8 |
-| 1 Core build | 0:30–2:30 | 🟦 | 3/9 |
-| 2 Routes, matching, judging | 2:30–4:00 | ⬜ | 0/7 |
-| 3 Integration, image claims, packaging | 4:00–5:00 | ⬜ | 0/8 |
+| 1 Core build | 0:30–2:30 | ✅ | 9/9 |
+| 2 Routes, matching, judging | 2:30–4:00 | 🟦 | 5/7 |
+| 3 Integration, image claims, packaging | 4:00–5:00 | 🟦 | 2/9 |
 | 4 Parallel testing + benchmark | 5:00–6:15 | ⬜ | 0/11 |
 | 5 Polish and submit | 6:15–7:00 | ⬜ | 0/9 |
 
@@ -28,11 +28,11 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 
 | Kind | Priority | Extractor (A) | Doc parser (B) | Matcher (B) | Gemma judge/patch (C) | Works on fixtures |
 |---|---|---|---|---|---|---|
-| npm scripts | P0 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
-| env vars | P0 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
-| API routes | P0 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| ports/URLs | P0 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| Node/engines | P0 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| npm scripts | P0 | ✅ | ✅ | ⬜ | ⬜ | ✅ |
+| env vars | P0 | ✅ | ✅ | ⬜ | ⬜ | ✅ |
+| API routes | P0 | ✅ | ⬜ | ⬜ | ⬜ | ✅ |
+| ports/URLs | P0 | ✅ | ⬜ | ⬜ | ⬜ | ✅ |
+| Node/engines | P0 | ✅ | ✅ | ⬜ | ⬜ | ✅ |
 | **screenshot claims** | P1 (key) | n/a | ⬜ (`extract_images`) | ⬜ | ⬜ (`vision`) | ⬜ |
 | dependencies | P1 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | code samples | P1 | n/a | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -74,32 +74,33 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 | 1.1 | `detect.py` + `extract_pkg.py` (scripts, deps, engines, `.nvmrc`) | A | ✅ | detect.py classifies Next/Express/Vite; extract_pkg.py extracts npm_script/dependency/engine facts, lockfile pm, and .nvmrc |
 | 1.2 | `extract_env.py` (`process.env`, `import.meta.env`, `.env.example`) | A | ✅ | process.env.X / process.env["X"] / import.meta.env.X + .env.example keys; NEXT_PUBLIC_/VITE_ tagged client-exposed; PORT ignored per allow-list | 
 | 1.3 | Unit tests for 1.1–1.2 | A | ✅ | `tests/test_extract_pkg_env.py` covers detect/pkg/env examples incl. mini next_app fixture |
-| 1.4 | `extract_docs.py`: npm-run, env vars, routes/curl, ports, Node versions | B | ⬜ | | 
-| 1.5 | Unit tests for 1.4 | B | ⬜ | |
-| 1.6 | `llm.py`: Gemini API + Ollama client, text and image messages, retry, cache, JSON validation | C | ⬜ | |
-| 1.7 | System-role folding flag wired from Stage 0 decision | C | ⬜ | |
-| 1.8 | `references/prompts.md` v1 (judge) with web hints | C | ⬜ | |
-| 1.9 | Mocked tests for 1.6 (text and image) | C | ⬜ | |
+| 1.4 | `extract_docs.py`: npm-run, env vars, routes/curl, ports, Node versions | B | ✅ | Landed; verified by A: emits npm_script/env_var/route/port/engine claims from md/txt |
+| 1.5 | Unit tests for 1.4 | B | ✅ | `tests/test_extract_docs.py` green |
+| 1.6 | `llm.py`: Gemini API + Ollama client, text and image messages, retry, cache, JSON validation | C | ✅ | Landed; verified by A: `tests/test_llm.py` green |
+| 1.7 | System-role folding flag wired from Stage 0 decision | C | ✅ | `fold_system_prompt` wired in `llm.py` |
+| 1.8 | `references/prompts.md` v1 (judge) with web hints | C | ✅ | v1 present |
+| 1.9 | Mocked tests for 1.6 (text and image) | C | ✅ | Covered by `tests/test_llm.py`; full suite 52/52 green |
 
 ## Stage 2 — Routes, matching, judging (2:30–4:00)
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 2.1 | `extract_routes.py`: Next App Router + Pages Router | A | 🟦 | in progress |
-| 2.2 | `extract_routes.py`: Express routes and same-file prefixes | A | 🟦 | in progress |
-| 2.3 | `extract_ports.py` | A | 🟦 | in progress |
+| 2.1 | `extract_routes.py`: Next App Router + Pages Router | A | ✅ | App Router (`[id]`→`:id`, `(group)` ignored, methods from exports) + Pages Router `pages/api/**`; POSIX paths |
+| 2.2 | `extract_routes.py`: Express routes and same-file prefixes | A | ✅ | `(app|router).get('...')` + same-file `app.use('/prefix', router)` resolved onto var routes; cross-file prefixes left unresolved → matcher SUSPECT |
+| 2.3 | `extract_ports.py` | A | ✅ | `.listen(N)`, `PORT || N`, `-p`/`--port` in scripts, next/vite `server.port` |
 | 2.4 | `match.py`: per-kind rules, dynamic-route normalisation, allow-list, image-confidence discount + tests | B | ⬜ | |
 | 2.5 | `judge.py`: batched verdicts, schema check, threshold | C | ✅ | Implemented: batched (<=5) SUSPECT judge with citation & threshold validation |
 | 2.6 | `patch.py`: unified diff, deterministic suggestions, `git apply --check` | C | ✅ | Implemented: unified diff generation with git apply --check verification & combined_patch |
-| 2.7 | End-to-end text run on one fixture (`--no-llm` and Gemma 4) | A, B, C | ⬜ | **P0 frozen after this** |
+| 2.7 | End-to-end text run on one fixture (`--no-llm` and Gemma 4) | A, B, C | 🟦 | `--no-llm` run DONE on `next_app` via `scripts/drift.py scan` (17 claims → all 7 planted drifts flagged, exit 1). Gemma 4 run pending API key (**P0 frozen after this**) |
 
 ## Stage 3 — Integration, image claims, packaging (4:00–5:00)
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 3.1 | `scripts/drift.py` CLI: `scan`, `--diff`, `--no-llm`, `--no-images`, `--config` | A | ⬜ | |
+| 3.1 | `scripts/drift.py` CLI: `scan`, `--diff`, `--no-llm`, `--no-images`, `--config` | A | ✅ | `scan`, `--no-llm` (also skips images), `--no-images`, `--config` JSON (flags win) wired detect→extract→match→judge→patch→report; clear non-web message, exit 2. `--diff` waits on `gitdiff.py` (3.2, P1) |
 | 3.2 | `gitdiff.py` diff mode | A | ⬜ | P1 |
-| 3.3 | `next_app` fixture started (text drifts + 2 screenshots) | A | ⬜ | |
+| 3.3 | `next_app` fixture started (text drifts + 2 screenshots) | A | 🟦 | 7 planted text drifts + 10 decoys in `README.md`/`docs/api.md`, App+Pages routes, `.env.example`, `.nvmrc`; **screenshots still missing** |
+| 3.9 | `benchmark/run_bench.py --model <id>`: expected.json scoring, text/image recall, decoys flagged, calls saved, patch validity, runtime, grep baseline → `benchmark/results/<model>.json` | A | ✅ | Verified: next_app --no-llm → text recall 100% (7/7), decoys 0/10, grep baseline 85.7% w/ 5 decoys flagged, 0.15s |
 | 3.4 | `extract_images.py`: find local images, caps, hash cache, claims into matcher | B | ⬜ | P1 key |
 | 3.5 | `report.py`: JSON + Markdown, image findings, model line, exit codes | B | ⬜ | |
 | 3.6 | `vision.py`: prompt, JSON validation, empty/low-quality handling | C | ⬜ | P1 key |
@@ -163,11 +164,13 @@ Note: the shortlist above is provisional until Stage 4 picks are rechecked for r
 
 Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 15 %, calls saved ≥ 60 %, patches applying cleanly ≥ 90 %.
 
+> **Preliminary (2026-10-09, deterministic `--no-llm`):** text recall **100 %** (7/7) vs naive grep **85.7 %** (6/7); decoys wrongly flagged **0/10** vs grep **5/10**; LLM calls saved 2 SUSPECT → 1 batched call; runtime 0.15 s; 0 deterministic patches (5 STALE need review — corrections need the Gemma judge). API-mode runs pending `DRIFT_API_KEY`.
+
 **Per fixture (31B)**
 
 | Fixture | Planted text | Caught | Planted image | Caught | Decoys flagged | Notes |
 |---|---|---|---|---|---|---|
-| next_app | | | | | | |
+| next_app | 7 | 7 | 0 | 0 | 0/10 | `--no-llm` run 2026-10-09 via `run_bench.py`; grep baseline caught 6/7 but wrongly flagged 5/10 decoys; results in `benchmark/results/gemma-4-31b-it.json` (mode `no-llm`) |
 | express_api | | | | | | |
 | vite_react | | | | | | |
 
@@ -178,6 +181,8 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 | 2026-10-09 | initial Stage 0 verification commit (LICENSE, models, schema, .env.example, progress update) | A/B/C | — | Stage 0 scaffolding started |
 | 2026-10-09 | Stage 0 AI layer setup with smoke tests | C | A | Added smoke tests, verified model IDs and base URL, spec notes |
 | 2026-10-09 | Stage 1A extractor build + tests | A | — | Added drift/detect.py, drift/extract_pkg.py, drift/extract_env.py, tests/test_extract_pkg_env.py; manual anyhow checks passed | 
+| 2026-10-09 | Stage 2A route/port extractors + tests | A | — | `extract_routes.py` (App/Pages/Express + same-file prefixes), `extract_ports.py`, `tests/test_extract_routes_ports.py`; full suite 52/52 green |
+| 2026-10-09 | Stage 3A CLI + benchmark runner + next_app fixture | A | — | `scripts/drift.py` (scan/--no-llm/--no-images/--config), `benchmark/run_bench.py`, `benchmark/expected.json`, fixture (7 planted, 10 decoys); bench: text recall 100% vs grep 85.7% |
 
 ## Decisions Log
 
@@ -188,6 +193,7 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 | 2026-10-09 | Entering categories: Best Open-Source AI Project + Best Use of Gemma 4 (both eligible per MLH organizer docs, pending host confirmation) | organizer guidance says same project can be submitted to every selected challenge | A |
 | 2026-10-09 | `.env.example` committed; real keys stay local and git-ignored | keep keys out of history | all |
 | 2026-10-09 | Exact Gemini base URL verified as `https://generativelanguage.googleapis.com/v1beta/openai/`, model `gemma-4-31b-it`, Ollama tag `gemma4:e4b` | Stage 0 official doc verification | C |
+| 2026-10-09 | CLI imports B/C modules (`match`, `report`, `extract_images`, `vision`) defensively and falls back to a built-in deterministic matcher + schema-shaped JSON report until they land | keeps `main` runnable while teammates' modules are in flight; auto-upgrades when they merge | A |
 
 ## Blockers
 
@@ -199,7 +205,11 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 
 | ID | Found by | Module (owner) | Description | Status |
 |---|---|---|---|---|
-| | | | | |
+| B1 | A | `extract_routes.py` (A) | Pages router used undefined `methods`; express match loop was dedented → `UnboundLocalError`; `use()`-prefix regex required `express.Router()` inline | ✅ fixed; tests green |
+| B2 | A | `extract_ports.py`, `extract_routes.py` (A) | `fact.file` used OS separators (backslashes on Windows) → broke path matching across platforms | ✅ fixed → `as_posix()` |
+| B3 | A | `tests/test_extract_pkg_env.py` (A) | Two statements merged on one line (runtime TypeError) + Windows-only `\\` path expectations | ✅ fixed |
+| B4 | A | `extract_docs.py` (B) | Fenced-block claims get `source="code"`, violating models.py contract (`text`\|`image`) and schema enum; fallback report normalises `code`→`text` | 🟦 open — B to fix at source |
+| B5 | A | `extract_docs.py` (B) | Route claims keep a trailing backtick (``GET /api/x` ``) from prose; matcher strips it during normalisation | 🟦 open (minor) |
 
 ## Submission Checklist
 
