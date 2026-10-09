@@ -1,0 +1,2 @@
+"""docs-drift-detector package."""
+

@@ -1,0 +1,10 @@
+.env
+.drift_cache/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+node_modules/
+.DS_Store
+Thumbs.db
+
