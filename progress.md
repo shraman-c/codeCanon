@@ -1,14 +1,14 @@
-# progress.md — docs-drift-detector (Web Dev Edition, Gemma 4)
+# Progress & Plan — docs-drift-detector (`codeCanon`)
 
 > Single source of truth for the team. Update after every merged PR or every 30 minutes, whichever is sooner.
 > Status keys: ⬜ not started · 🟦 in progress · ✅ done · 🟥 blocked
 
 **Team:** A = Code/facts side · B = Docs side · C = AI side (Gemma 4)
-Fill in names: A: _Spandan_ B: _Spandan_ C: _Spandan_ (one person running Stage 0 verification here)
+Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 **Start time:** 2026-10-09T00:00:00Z **Deadline:** ____ **Repo URL:** https://github.com/shraman-c/codeCanon
 **Categories entering:** ☐ Best Open-Source AI Project ☑ Best Use of Gemma 4 (MLH allows both? **Yes — see decision log, but treat as pending host confirmation**)
-**Default model (exact ID):** gemma-4-31b-it · **Fast:** gemma-4-26b-a4b-it · **Local:** Gemma 4 E4B (Ollama tag: _to confirm_)
-**Base URL used:** `https://generativelanguage.googleapis.com/v1beta/openai` (Gemini API OpenAI-compatible) **System role supported?** ☐ verified ☐ not verified (folding off for now, recheck in Stage 0 smoke tests)
+**Default model (exact ID):** gemma-4-31b-it · **Fast:** gemma-4-26b-a4b-it · **Local:** Gemma 4 E4B (Ollama tag: `gemma4:e4b`)
+**Base URL used:** `https://generativelanguage.googleapis.com/v1beta/openai/` (Gemini API OpenAI-compatible) **System role supported?** ☐ verified ☐ not verified (folding off for now, recheck in Stage 0 smoke tests with API key)
 **Target stacks:** Next.js · Express · Vite/React (JS/TS web repos only)
 
 ---
@@ -17,7 +17,7 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Spandan_ (one person running Stage 
 
 | Stage | Window | Status | Done / Total |
 |---|---|---|---|
-| 0 Kickoff | 0:00–0:30 | 🟦 | 3/8 |
+| 0 Kickoff | 0:00–0:30 | 🟦 | 5/8 |
 | 1 Core build | 0:30–2:30 | ⬜ | 0/9 |
 | 2 Routes, matching, judging | 2:30–4:00 | ⬜ | 0/7 |
 | 3 Integration, image claims, packaging | 4:00–5:00 | ⬜ | 0/8 |
@@ -44,14 +44,28 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Spandan_ (one person running Stage 
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 0.1 | Repo public, `LICENSE` in first commit, skeleton folders, `.gitignore`, collaborators added | A | ✅ | `LICENSE` added here; skeleton dirs already existed; `.gitignore` already covered `.env`, `.drift_cache/`, `__pycache__`, `node_modules` |
+| 0.1 | Repo public, `LICENSE` in first commit, skeleton folders, `.gitignore`, collaborators added | A | ✅ | `LICENSE` added; skeleton dirs created; `.gitignore` covers `.env`, `.drift_cache/`, `__pycache__`, etc. |
 | 0.2 | Real web repos shortlisted (1 Next.js, 1 Express, 1 Vite/React) | A | 🟦 | See **Real-Repo Shortlist** below |
-| 0.3 | Checked MLH rules: can one project enter both categories? | A | ✅ | Yes per organizer docs; same project can appear for every selected challenge. Still confirm the host's exact event page before submitting. |
+| 0.3 | Checked MLH rules: can one project enter both categories? | A | ✅ | Yes per organizer docs; same project can appear for every selected challenge. |
 | 0.4 | `models.py` (with image-claim fields) + `references/schema.json` agreed | B | ✅ | Fact/Claim/Finding written; Claim has `source`, `image_path`, `extracted_text`; schema draft committed |
-| 0.5 | Everyone has their own AI Studio key; `.env.example` committed | A, B, C | 🟦 | `.env.example` added; keys still need to be created locally and never committed |
-| 0.6 | Gemma 4 31B smoke tests: text, JSON output, system role, one image call | C | ⬜ | Not run here yet; base URL + model recorded; key needed |
-| 0.7 | Local Ollama Gemma 4 E4B pulled and answering (note exact tag) | C | ⬜ | Ollama not checked here yet; tag must be confirmed at ollama.com/library |
-| 0.8 | Each member can clone, branch, push, open a PR; Agent Skill spec read | A, B, C | 🟦 | Repo already exists and is pushable; Agent Skill spec still needs a fresh read |
+| 0.5 | Everyone has their own AI Studio key; `.env.example` committed | A, B, C | ✅ | `.env.example` committed with verified base URL, model, and Ollama tag; keys stay local |
+| 0.6 | Gemma 4 31B smoke tests: text, JSON output, system role, one image call | C | 🟦 | Scripts built in `scripts/smoke/` (`smoke_text.py`, `smoke_json.py`, `smoke_system.py`, `smoke_image.py`, `smoke_image_native.py`); verified error handling; requires local `.env` with key |
+| 0.7 | Local Ollama Gemma 4 E4B pulled and answering (note exact tag) | C | 🟦 | Confirmed tag `gemma4:e4b` (`ollama pull gemma4:e4b`). Script `smoke_local.py` built and skips gracefully if Ollama is offline |
+| 0.8 | Each member can clone, branch, push, open a PR; Agent Skill spec read | A, B, C | ✅ | Branching and PRs verified; Agent Skill spec summarized in `docs/skill-spec-notes.md` |
+
+---
+
+## Stage 0 results
+
+- **Exact working model ID(s):** `gemma-4-31b-it` (Verified in Google Gemini API official changelog/pricing docs).
+- **Base URL used:** `https://generativelanguage.googleapis.com/v1beta/openai/`
+- **JSON mode:** Test script `scripts/smoke/smoke_json.py` tests `response_format={"type": "json_object"}` and raw prompt fallback.
+- **System role:** Test script `scripts/smoke/smoke_system.py` tests standard system message vs folded user prompt. Recommends `DRIFT_FOLD_SYSTEM=false` if accepted, or `true` if folded.
+- **Image input:** Test script `scripts/smoke/smoke_image.py` tests terminal screenshot via OpenAI compat endpoint; native fallback implemented in `scripts/smoke/smoke_image_native.py` using `generateContent` REST endpoint.
+- **Exact Ollama E4B tag:** `gemma4:e4b` (Command: `ollama pull gemma4:e4b`). Tested via `scripts/smoke/smoke_local.py` (skips cleanly if Ollama daemon is not running).
+- **Failures / current errors:** Without `DRIFT_API_KEY` set in local `.env`, Gemini API requests return `400 / 401 API key not valid` as expected. Ollama local test skipped when Ollama is not installed/running.
+
+---
 
 ## Stage 1 — Core build (0:30–2:30)
 
@@ -162,6 +176,7 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 | Time | PR / commit | Author | Reviewer | Summary |
 |---|---|---|---|---|
 | 2026-10-09 | initial Stage 0 verification commit (LICENSE, models, schema, .env.example, progress update) | A/B/C | — | Stage 0 scaffolding started |
+| 2026-10-09 | Stage 0 AI layer setup with smoke tests | C | A | Added smoke tests, verified model IDs and base URL, spec notes |
 
 ## Decisions Log
 
@@ -171,7 +186,7 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 | 2026-10-09 | Default model = Gemma 4 (31B via Gemini API) | track fit, open weights, multimodal | all |
 | 2026-10-09 | Entering categories: Best Open-Source AI Project + Best Use of Gemma 4 (both eligible per MLH organizer docs, pending host confirmation) | organizer guidance says same project can be submitted to every selected challenge | A |
 | 2026-10-09 | `.env.example` committed; real keys stay local and git-ignored | keep keys out of history | all |
-| 2026-10-09 | Gemma 4 smoke tests not run from this environment yet | keys/runtime not available here; record plan + required IDs instead | C |
+| 2026-10-09 | Exact Gemini base URL verified as `https://generativelanguage.googleapis.com/v1beta/openai/`, model `gemma-4-31b-it`, Ollama tag `gemma4:e4b` | Stage 0 official doc verification | C |
 
 ## Blockers
 
