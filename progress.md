@@ -17,8 +17,8 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 
 | Stage | Window | Status | Done / Total |
 |---|---|---|---|
-| 0 Kickoff | 0:00–0:30 | 🟦 | 5/8 |
-| 1 Core build | 0:30–2:30 | ⬜ | 0/9 |
+| 0 Kickoff | 0:00–0:30 | ✅ | 8/8 |
+| 1 Core build | 0:30–2:30 | 🟦 | 3/9 |
 | 2 Routes, matching, judging | 2:30–4:00 | ⬜ | 0/7 |
 | 3 Integration, image claims, packaging | 4:00–5:00 | ⬜ | 0/8 |
 | 4 Parallel testing + benchmark | 5:00–6:15 | ⬜ | 0/11 |
@@ -28,13 +28,13 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 
 | Kind | Priority | Extractor (A) | Doc parser (B) | Matcher (B) | Gemma judge/patch (C) | Works on fixtures |
 |---|---|---|---|---|---|---|
-| npm scripts | P0 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| env vars | P0 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| npm scripts | P0 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| env vars | P0 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | API routes | P0 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | ports/URLs | P0 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| Node/engines | P0 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| Node/engines | P0 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | **screenshot claims** | P1 (key) | n/a | ⬜ (`extract_images`) | ⬜ | ⬜ (`vision`) | ⬜ |
-| dependencies | P1 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| dependencies | P1 | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | code samples | P1 | n/a | ⬜ | ⬜ | ⬜ | ⬜ |
 | component props | P2 | ⬜ | n/a | ⬜ | ⬜ | ⬜ |
 
@@ -71,10 +71,10 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 1.1 | `detect.py` + `extract_pkg.py` (scripts, deps, engines, `.nvmrc`) | A | ⬜ | |
-| 1.2 | `extract_env.py` (`process.env`, `import.meta.env`, `.env.example`) | A | ⬜ | |
-| 1.3 | Unit tests for 1.1–1.2 | A | ⬜ | |
-| 1.4 | `extract_docs.py`: npm-run, env vars, routes/curl, ports, Node versions | B | ⬜ | |
+| 1.1 | `detect.py` + `extract_pkg.py` (scripts, deps, engines, `.nvmrc`) | A | ✅ | detect.py classifies Next/Express/Vite; extract_pkg.py extracts npm_script/dependency/engine facts, lockfile pm, and .nvmrc |
+| 1.2 | `extract_env.py` (`process.env`, `import.meta.env`, `.env.example`) | A | ✅ | process.env.X / process.env["X"] / import.meta.env.X + .env.example keys; NEXT_PUBLIC_/VITE_ tagged client-exposed; PORT ignored per allow-list | 
+| 1.3 | Unit tests for 1.1–1.2 | A | ✅ | `tests/test_extract_pkg_env.py` covers detect/pkg/env examples incl. mini next_app fixture |
+| 1.4 | `extract_docs.py`: npm-run, env vars, routes/curl, ports, Node versions | B | ⬜ | | 
 | 1.5 | Unit tests for 1.4 | B | ⬜ | |
 | 1.6 | `llm.py`: Gemini API + Ollama client, text and image messages, retry, cache, JSON validation | C | ⬜ | |
 | 1.7 | System-role folding flag wired from Stage 0 decision | C | ⬜ | |
@@ -85,9 +85,9 @@ Fill in names: A: _Spandan_ B: _Spandan_ C: _Sourav_
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 2.1 | `extract_routes.py`: Next App Router + Pages Router | A | ⬜ | |
-| 2.2 | `extract_routes.py`: Express routes and same-file prefixes | A | ⬜ | |
-| 2.3 | `extract_ports.py` | A | ⬜ | |
+| 2.1 | `extract_routes.py`: Next App Router + Pages Router | A | 🟦 | in progress |
+| 2.2 | `extract_routes.py`: Express routes and same-file prefixes | A | 🟦 | in progress |
+| 2.3 | `extract_ports.py` | A | 🟦 | in progress |
 | 2.4 | `match.py`: per-kind rules, dynamic-route normalisation, allow-list, image-confidence discount + tests | B | ⬜ | |
 | 2.5 | `judge.py`: batched verdicts, schema check, threshold | C | ⬜ | |
 | 2.6 | `patch.py`: unified diff, deterministic suggestions, `git apply --check` | C | ⬜ | |
@@ -177,6 +177,7 @@ Targets: text recall ≥ 80 % (31B), image recall ≥ 60 %, false positives ≤ 
 |---|---|---|---|---|
 | 2026-10-09 | initial Stage 0 verification commit (LICENSE, models, schema, .env.example, progress update) | A/B/C | — | Stage 0 scaffolding started |
 | 2026-10-09 | Stage 0 AI layer setup with smoke tests | C | A | Added smoke tests, verified model IDs and base URL, spec notes |
+| 2026-10-09 | Stage 1A extractor build + tests | A | — | Added drift/detect.py, drift/extract_pkg.py, drift/extract_env.py, tests/test_extract_pkg_env.py; manual anyhow checks passed | 
 
 ## Decisions Log
 
