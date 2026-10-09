@@ -1,8 +1,8 @@
 {
   "model": "gemma-4-31b-it",
   "mode": "no-llm",
-  "generated_at": "2026-10-09T09:49:30.250891+00:00",
-  "runtime_s": 0.202,
+  "generated_at": "2026-10-09T10:09:29.186120+00:00",
+  "runtime_s": 0.137,
   "llm": {
     "enabled": false,
     "calls_made": 0,
@@ -21,7 +21,7 @@
     "grep_text_planted": 7,
     "grep_text_detected": 6,
     "grep_decoys_wrongly_flagged": 5,
-    "runtime_s": 0.202,
+    "runtime_s": 0.137,
     "text_recall": 1.0,
     "image_recall": null,
     "grep_text_recall": 0.8571428571428571
@@ -48,7 +48,7 @@
       "patches_needs_review": 7,
       "patch_validity": 0.0,
       "suspects_at_judge": 2,
-      "runtime_s": 0.202,
+      "runtime_s": 0.137,
       "exit_code": 1,
       "grep_baseline": {
         "text_planted": 7,

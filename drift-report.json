@@ -4,22 +4,17 @@
     "kind": "next_app",
     "mode": "scan",
     "diff": null,
-    "ignored_paths": [
-      ".drift_cache",
-      ".git",
-      ".next",
-      "build",
-      "coverage",
-      "dist",
-      "node_modules"
-    ],
+    "ignored_paths": [],
     "stats": {
-      "facts": 21,
-      "claims": 17,
-      "findings": 17,
-      "stale": 5,
-      "suspect": 2,
-      "ok": 10
+      "files_read": 0,
+      "images_read": 0
+    }
+  },
+  "model": {
+    "id": "gemma-4-31b-it (disabled: --no-llm)",
+    "mode": "api",
+    "config": {
+      "threshold": 0.6
     }
   },
   "facts": [
@@ -194,7 +189,17 @@
     },
     {
       "kind": "route",
-      "text": "GET /api/orders`",
+      "text": "GET /api/orders",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+      "line": 5,
+      "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build. - `GET /api/orders` lists orders.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "/api/orders",
       "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
       "line": 5,
       "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build. - `GET /api/orders` lists orders.",
@@ -244,7 +249,7 @@
     },
     {
       "kind": "route",
-      "text": "GET /api/users`",
+      "text": "GET /api/users",
       "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
       "line": 23,
       "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users`",
@@ -254,7 +259,17 @@
     },
     {
       "kind": "route",
-      "text": "POST /api/users`",
+      "text": "/api/users",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 23,
+      "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users`",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "POST /api/users",
       "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
       "line": 24,
       "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users`",
@@ -264,7 +279,27 @@
     },
     {
       "kind": "route",
-      "text": "GET /api/v2/users`",
+      "text": "/api/users",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 24,
+      "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users`",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "GET /api/v2/users",
+      "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+      "line": 25,
+      "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list.",
+      "source": "text",
+      "image_path": null,
+      "extracted_text": null
+    },
+    {
+      "kind": "route",
+      "text": "/api/v2/users",
       "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
       "line": 25,
       "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list.",
@@ -356,45 +391,9 @@
         "extracted_text": null
       },
       "status": "STALE",
-      "reason": "no script named `seed` in package.json",
-      "evidence": [
-        {
-          "kind": "npm_script",
-          "name": "dev",
-          "detail": "next dev -p 3000",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "build",
-          "detail": "next build",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "start",
-          "detail": "next start",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "test",
-          "detail": "jest",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "lint",
-          "detail": "next lint",
-          "file": "package.json",
-          "line": 0
-        }
-      ],
-      "confidence": 0.9,
+      "reason": "script 'seed' not found in package.json",
+      "evidence": [],
+      "confidence": 1.0,
       "patch": null,
       "source": "deterministic"
     },
@@ -410,7 +409,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "script `build` exists in package.json",
+      "reason": "script 'build' exists in package.json",
       "evidence": [
         {
           "kind": "npm_script",
@@ -427,7 +426,7 @@
     {
       "claim": {
         "kind": "route",
-        "text": "GET /api/orders`",
+        "text": "GET /api/orders",
         "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
         "line": 5,
         "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build. - `GET /api/orders` lists orders.",
@@ -436,7 +435,7 @@
         "extracted_text": null
       },
       "status": "STALE",
-      "reason": "route /api/orders not found in code",
+      "reason": "route 'GET /api/orders' not found in code routes",
       "evidence": [
         {
           "kind": "route",
@@ -460,7 +459,47 @@
           "line": 0
         }
       ],
-      "confidence": 0.9,
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "/api/orders",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\docs\\api.md",
+        "line": 5,
+        "context": "# API Reference  - `npm run seed` fills the database with demo data. - `pnpm build` produces the production build. - `GET /api/orders` lists orders.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "STALE",
+      "reason": "route '/api/orders' not found in code routes",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/health",
+          "detail": "GET",
+          "file": "app/api/health/route.ts",
+          "line": 0
+        },
+        {
+          "kind": "route",
+          "name": "/api/users/:id",
+          "detail": "GET",
+          "file": "app/api/users/[id]/route.ts",
+          "line": 0
+        },
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
       "patch": null,
       "source": "deterministic"
     },
@@ -476,7 +515,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "built-in npm script",
+      "reason": "'install' is a built-in npm script",
       "evidence": [],
       "confidence": 0.9,
       "patch": null,
@@ -494,20 +533,13 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "node 20.11.0 satisfies engines (>=20)",
+      "reason": "claimed node 20.11.0 satisfies engines (>=20)",
       "evidence": [
         {
           "kind": "engine",
           "name": "node",
           "detail": ">=20",
           "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "engine",
-          "name": "node",
-          "detail": "20.11.0",
-          "file": ".nvmrc",
           "line": 0
         }
       ],
@@ -527,45 +559,9 @@
         "extracted_text": null
       },
       "status": "STALE",
-      "reason": "no script named `serve` in package.json",
-      "evidence": [
-        {
-          "kind": "npm_script",
-          "name": "dev",
-          "detail": "next dev -p 3000",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "build",
-          "detail": "next build",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "start",
-          "detail": "next start",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "test",
-          "detail": "jest",
-          "file": "package.json",
-          "line": 0
-        },
-        {
-          "kind": "npm_script",
-          "name": "lint",
-          "detail": "next lint",
-          "file": "package.json",
-          "line": 0
-        }
-      ],
-      "confidence": 0.9,
+      "reason": "script 'serve' not found in package.json",
+      "evidence": [],
+      "confidence": 1.0,
       "patch": null,
       "source": "deterministic"
     },
@@ -581,7 +577,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "port 3000 found in code",
+      "reason": "port 3000 matches detected port",
       "evidence": [
         {
           "kind": "port",
@@ -598,7 +594,7 @@
     {
       "claim": {
         "kind": "route",
-        "text": "GET /api/users`",
+        "text": "GET /api/users",
         "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
         "line": 23,
         "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users`",
@@ -607,7 +603,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "GET /api/users exists in code",
+      "reason": "route GET /api/users matches code route",
       "evidence": [
         {
           "kind": "route",
@@ -624,7 +620,33 @@
     {
       "claim": {
         "kind": "route",
-        "text": "POST /api/users`",
+        "text": "/api/users",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 23,
+        "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users`",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "OK",
+      "reason": "route ? /api/users matches code route",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "POST /api/users",
         "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
         "line": 24,
         "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users`",
@@ -633,7 +655,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "POST /api/users exists in code",
+      "reason": "route POST /api/users matches code route",
       "evidence": [
         {
           "kind": "route",
@@ -650,16 +672,16 @@
     {
       "claim": {
         "kind": "route",
-        "text": "GET /api/v2/users`",
+        "text": "/api/users",
         "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
-        "line": 25,
-        "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list.",
+        "line": 24,
+        "context": "Run the dev server:  npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users`",
         "source": "text",
         "image_path": null,
         "extracted_text": null
       },
-      "status": "SUSPECT",
-      "reason": "similar route exists: /api/users",
+      "status": "OK",
+      "reason": "route ? /api/users matches code route",
       "evidence": [
         {
           "kind": "route",
@@ -669,7 +691,59 @@
           "line": 0
         }
       ],
-      "confidence": 0.6,
+      "confidence": 1.0,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "GET /api/v2/users",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 25,
+        "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "SUSPECT",
+      "reason": "route '/api/v2/users' similar to existing '/api/users' (possible version prefix change)",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 0.7,
+      "patch": null,
+      "source": "deterministic"
+    },
+    {
+      "claim": {
+        "kind": "route",
+        "text": "/api/v2/users",
+        "doc_file": "D:\\vsasaaadada\\codeCanon\\benchmark\\fixtures\\next_app\\README.md",
+        "line": 25,
+        "context": "npm run serve  Then open `http://localhost:3000` in your browser.  ## API  - List users: `GET /api/users` - Create a user: `POST /api/users` - Legacy docs: `GET /api/v2/users` returns the paginated list.",
+        "source": "text",
+        "image_path": null,
+        "extracted_text": null
+      },
+      "status": "SUSPECT",
+      "reason": "route '/api/v2/users' similar to existing '/api/users' (possible version prefix change)",
+      "evidence": [
+        {
+          "kind": "route",
+          "name": "/api/users",
+          "detail": "GET,POST",
+          "file": "app/api/users/route.ts",
+          "line": 0
+        }
+      ],
+      "confidence": 0.7,
       "patch": null,
       "source": "deterministic"
     },
@@ -685,7 +759,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "route /api/users/:id exists in code",
+      "reason": "route ? /api/users/:id matches code route",
       "evidence": [
         {
           "kind": "route",
@@ -711,7 +785,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "route /api/users/:id exists in code",
+      "reason": "route ? /api/users/:id matches code route",
       "evidence": [
         {
           "kind": "route",
@@ -737,31 +811,9 @@
         "extracted_text": null
       },
       "status": "STALE",
-      "reason": "env var STRIPE_SECRET_KEY not found in code",
-      "evidence": [
-        {
-          "kind": "env_var",
-          "name": "DATABASE_URL",
-          "detail": "example value in .env.example: postgresql://demo",
-          "file": ".env.example",
-          "line": 0
-        },
-        {
-          "kind": "env_var",
-          "name": "NEXT_PUBLIC_API_URL",
-          "detail": "client-exposed (Next.js)",
-          "file": "lib\\db.ts",
-          "line": 1
-        },
-        {
-          "kind": "env_var",
-          "name": "CACHE_HOST",
-          "detail": "server-side",
-          "file": "lib\\db.ts",
-          "line": 1
-        }
-      ],
-      "confidence": 0.9,
+      "reason": "env var 'STRIPE_SECRET_KEY' not found in code or .env.example",
+      "evidence": [],
+      "confidence": 1.0,
       "patch": null,
       "source": "deterministic"
     },
@@ -777,7 +829,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "env var DATABASE_URL present in code",
+      "reason": "env var 'DATABASE_URL' found in code or .env.example",
       "evidence": [
         {
           "kind": "env_var",
@@ -803,7 +855,7 @@
         "extracted_text": null
       },
       "status": "OK",
-      "reason": "env var NEXT_PUBLIC_API_URL present in code",
+      "reason": "env var 'NEXT_PUBLIC_API_URL' found in code or .env.example",
       "evidence": [
         {
           "kind": "env_var",
@@ -829,7 +881,7 @@
         "extracted_text": null
       },
       "status": "STALE",
-      "reason": "port 4000 not found in code",
+      "reason": "port 4000 not found in any detected port",
       "evidence": [
         {
           "kind": "port",
@@ -839,7 +891,7 @@
           "line": 0
         }
       ],
-      "confidence": 0.9,
+      "confidence": 1.0,
       "patch": null,
       "source": "deterministic"
     },
@@ -854,8 +906,8 @@
         "image_path": null,
         "extracted_text": null
       },
-      "status": "SUSPECT",
-      "reason": "repo requires >=20, docs say 16.20.0",
+      "status": "STALE",
+      "reason": "claimed node 16.20.0 below required >=20",
       "evidence": [
         {
           "kind": "engine",
@@ -863,25 +915,11 @@
           "detail": ">=20",
           "file": "package.json",
           "line": 0
-        },
-        {
-          "kind": "engine",
-          "name": "node",
-          "detail": "20.11.0",
-          "file": ".nvmrc",
-          "line": 0
         }
       ],
-      "confidence": 0.6,
+      "confidence": 1.0,
       "patch": null,
       "source": "deterministic"
     }
-  ],
-  "model": {
-    "id": "gemma-4-31b-it",
-    "mode": "api",
-    "config": {
-      "threshold": 0.6
-    }
-  }
+  ]
 }
