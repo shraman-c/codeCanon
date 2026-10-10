@@ -1,8 +1,10 @@
+<img width="1507" height="815" alt="codeCanon" src="https://github.com/user-attachments/assets/acb71ee5-6104-41e1-b8c8-2629afc179f1" />
+
 # codeCanon: Docs-Drift-Detector
 
 Code evolves fast. API routes get renamed, environment variables change prefixes, and ports shift. But `README.md` files, API docs, and embedded terminal screenshots get left behind. This causes friction, broken tutorials, and hours of wasted developer time.
 
-**Docs-Drift-Detector** is a CLI tool, GUI, and autonomous Agent Skill that mathematically proves whether your documentation matches your JS/TS codebase. 
+**codeCanon** is a CLI tool, GUI, and autonomous Agent Skill that mathematically proves whether your documentation matches your JS/TS codebase. 
 
 ## Features
 - **Deterministic Code Fact Extraction**: Lightning-fast AST and Regex parsing to extract code facts (Next.js/Express routes, `package.json` scripts, `.env` variables, ports, and Node engine versions).
